@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bioquímica Celular: Laboratório Molecular</title>
+    <title>Bioquímica Celular: Missão Metabólica</title>
     <style>
         * {
             margin: 0;
@@ -13,14 +13,14 @@
         }
 
         body {
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background: linear-gradient(135deg, #0c2461, #1e3799, #4a69bd);
             color: white;
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1200px;
+        .game-container {
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -31,235 +31,298 @@
             margin-bottom: 30px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, #ff9a9e, #fad0c4, #fad0c4, #a1c4fd);
         }
 
         h1 {
-            font-size: 3.5rem;
+            font-size: 3rem;
             margin-bottom: 10px;
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
-            background: linear-gradient(to right, #00c6ff, #0072ff);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to right, #ff9a9e, #fad0c4, #a1c4fd);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
             color: #e0e0e0;
         }
 
-        .game-container {
-            display: flex;
-            flex-wrap: wrap;
+        .mission-brief {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9a9e;
+        }
+
+        .mission-area {
+            display: grid;
+            grid-template-columns: 1fr 300px;
             gap: 20px;
             margin-bottom: 30px;
         }
 
-        .lab-area {
-            flex: 2;
-            min-width: 300px;
+        @media (max-width: 768px) {
+            .mission-area {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .cell-environment {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .info-panel {
-            flex: 1;
-            min-width: 300px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .lab-bench {
-            width: 100%;
-            height: 400px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            margin-bottom: 20px;
+            min-height: 500px;
             position: relative;
             overflow: hidden;
-            border: 2px solid rgba(255, 255, 255, 0.1);
         }
 
-        .molecule {
+        .mission-panel {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .pathway {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .metabolic-node {
             position: absolute;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            text-align: center;
             font-weight: bold;
-            text-shadow: 1px 1px 2px black;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-size: 0.9rem;
+            padding: 5px;
         }
 
-        .molecule:hover {
+        .metabolic-node:hover {
             transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
 
-        .glucose {
-            background: radial-gradient(circle, #56ab2f, #a8e063);
-            width: 80px;
-            height: 80px;
+        .node-glucose {
+            background: linear-gradient(135deg, #56ab2f, #a8e063);
+            top: 50px;
+            left: 50px;
         }
 
-        .atp {
-            background: radial-gradient(circle, #ff416c, #ff4b2b);
-            width: 70px;
-            height: 70px;
+        .node-atp {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            top: 50px;
+            right: 50px;
         }
 
-        .amino-acid {
-            background: radial-gradient(circle, #7b4397, #dc2430);
-            width: 60px;
-            height: 60px;
+        .node-enzyme {
+            background: linear-gradient(135deg, #00c9ff, #92fe9d);
+            top: 200px;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
-        .enzyme {
-            background: radial-gradient(circle, #00c9ff, #92fe9d);
-            width: 90px;
-            height: 90px;
+        .node-mitochondria {
+            background: linear-gradient(135deg, #7b4397, #dc2430);
+            bottom: 50px;
+            left: 50px;
         }
 
-        .lipid {
-            background: radial-gradient(circle, #f46b45, #eea849);
-            width: 75px;
-            height: 75px;
+        .node-protein {
+            background: linear-gradient(135deg, #4a90e2, #2457a3);
+            bottom: 50px;
+            right: 50px;
         }
 
-        .dna {
-            background: radial-gradient(circle, #8e2de2, #4a00e0);
-            width: 100px;
-            height: 50px;
-            border-radius: 50px/25px;
+        .connection {
+            position: absolute;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            transform-origin: 0 0;
         }
 
-        .rna {
-            background: radial-gradient(circle, #ffcc00, #ff8800);
-            width: 90px;
-            height: 45px;
-            border-radius: 45px/22px;
+        .connection-active {
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+            box-shadow: 0 0 10px rgba(255, 154, 158, 0.7);
         }
 
-        .protein {
-            background: radial-gradient(circle, #4a90e2, #2457a3);
-            width: 85px;
-            height: 85px;
-            border-radius: 20px;
+        .energy-flow {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ff9a9e;
+            box-shadow: 0 0 10px #ff9a9e;
+            animation: flow 2s linear infinite;
         }
 
-        .controls {
+        @keyframes flow {
+            0% { transform: translateX(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(var(--flow-distance)); opacity: 0; }
+        }
+
+        .mission-control {
             display: flex;
-            justify-content: space-between;
+            gap: 10px;
             margin-top: 20px;
         }
 
-        button {
-            background: linear-gradient(to right, #00c6ff, #0072ff);
+        .btn {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
             border: none;
-            color: white;
-            padding: 12px 25px;
+            color: #0c2461;
+            padding: 12px 20px;
             border-radius: 50px;
             cursor: pointer;
             font-size: 1rem;
             font-weight: bold;
             transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            flex: 1;
+            text-align: center;
         }
 
-        button:hover {
+        .btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
 
-        button:active {
+        .btn:active {
             transform: translateY(1px);
         }
 
-        .info-content {
+        .btn-secondary {
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+        }
+
+        .mission-info {
             background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
             padding: 15px;
             margin-bottom: 20px;
-            height: 200px;
-            overflow-y: auto;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #a1c4fd;
         }
 
-        .experiment-container {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .experiment-question {
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-        }
-
-        .experiment-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .experiment-option {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .experiment-option:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .score-board {
+        .mission-stats {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
             background: rgba(0, 0, 0, 0.3);
             padding: 15px;
             border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff9a9e;
+        }
+
+        .progress-container {
+            margin: 20px 0;
         }
 
         .progress-bar {
             height: 10px;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 5px;
-            margin-top: 10px;
             overflow: hidden;
         }
 
         .progress {
             height: 100%;
-            background: linear-gradient(to right, #00c9ff, #92fe9d);
+            background: linear-gradient(to right, #ff9a9e, #fad0c4, #a1c4fd);
             width: 0%;
             transition: width 0.5s;
         }
 
-        .molecule-list {
+        .challenge-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .challenge-question {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .challenge-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .challenge-option {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .challenge-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .challenge-option.correct {
+            background: rgba(76, 175, 80, 0.3);
+            border-left: 4px solid #4caf50;
+        }
+
+        .challenge-option.incorrect {
+            background: rgba(244, 67, 54, 0.3);
+            border-left: 4px solid #f44336;
+        }
+
+        .molecule-storage {
             display: flex;
-            flex-wrap: wrap;
             gap: 10px;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         .molecule-item {
@@ -267,535 +330,266 @@
             padding: 10px 15px;
             border-radius: 20px;
             font-size: 0.9rem;
-            cursor: pointer;
             transition: all 0.3s;
+            border: 1px solid transparent;
         }
 
-        .molecule-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
+        .molecule-item.activated {
+            background: rgba(255, 154, 158, 0.3);
+            border-color: #ff9a9e;
+            box-shadow: 0 0 10px rgba(255, 154, 158, 0.5);
         }
 
-        .molecule-item.analyzed {
-            background: rgba(0, 200, 0, 0.3);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: linear-gradient(135deg, #0f2027, #203a43);
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 500px;
-            width: 90%;
+        .mission-complete {
             text-align: center;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            margin-top: 20px;
+            display: none;
         }
 
-        .modal h2 {
-            margin-bottom: 20px;
+        .mission-complete h2 {
             font-size: 2rem;
-            background: linear-gradient(to right, #00c6ff, #0072ff);
+            margin-bottom: 15px;
+            background: linear-gradient(to right, #ff9a9e, #fad0c4, #a1c4fd);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .modal p {
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .close-modal {
-            background: linear-gradient(to right, #00c6ff, #0072ff);
-            border: none;
-            color: white;
+        .achievement {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
             padding: 10px 20px;
             border-radius: 50px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
+            margin: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .game-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .floating-molecule {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0.7;
         }
 
-        .stat-item {
-            text-align: center;
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
         }
 
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #00c6ff;
+        .molecule-1 {
+            background: radial-gradient(circle, #56ab2f, #a8e063);
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
         }
 
-        .reaction-area {
-            height: 120px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 10px;
-            margin: 15px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            border: 1px dashed rgba(255, 255, 255, 0.3);
+        .molecule-2 {
+            background: radial-gradient(circle, #ff416c, #ff4b2b);
+            top: 20%;
+            right: 15%;
+            animation-delay: 1s;
         }
 
-        .reaction-equation {
-            font-size: 1.2rem;
-            text-align: center;
-            padding: 10px;
+        .molecule-3 {
+            background: radial-gradient(circle, #00c9ff, #92fe9d);
+            bottom: 15%;
+            left: 20%;
+            animation-delay: 2s;
         }
 
-        .reaction-arrow {
-            margin: 0 15px;
-            font-size: 1.5rem;
-            color: #00c6ff;
-        }
-
-        .lab-equipment {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .equipment-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            flex: 1;
-        }
-
-        .equipment-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-        }
-
-        @media (max-width: 768px) {
-            .game-container {
-                flex-direction: column;
-            }
-            
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .experiment-options {
-                grid-template-columns: 1fr;
-            }
-            
-            .lab-equipment {
-                flex-wrap: wrap;
-            }
+        .molecule-4 {
+            background: radial-gradient(circle, #7b4397, #dc2430);
+            bottom: 25%;
+            right: 10%;
+            animation-delay: 3s;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="game-container">
         <header>
-            <h1>Bioquímica Celular: Laboratório Molecular</h1>
-            <p class="subtitle">Explore as reações químicas da vida e desvende os segredos das células!</p>
+            <h1>Bioquímica Celular: Missão Metabólica</h1>
+            <p class="subtitle">Sua missão: restaurar o metabolismo celular e produzir energia!</p>
+            <div class="mission-brief">
+                <p>A célula está com baixa energia! Você foi designado como Especialista em Bioquímica para diagnosticar e resolver os problemas metabólicos. Complete as missões para restaurar a produção de ATP!</p>
+            </div>
         </header>
 
-        <div class="game-container">
-            <div class="lab-area">
-                <div class="lab-bench" id="labBench">
-                    <!-- Moléculas serão adicionadas dinamicamente via JavaScript -->
+        <div class="mission-area">
+            <div class="cell-environment">
+                <div class="pathway" id="metabolicPathway">
+                    <div class="metabolic-node node-glucose" id="glucoseNode">Glicose</div>
+                    <div class="metabolic-node node-atp" id="atpNode">ATP</div>
+                    <div class="metabolic-node node-enzyme" id="enzymeNode">Enzimas</div>
+                    <div class="metabolic-node node-mitochondria" id="mitochondriaNode">Mitocôndria</div>
+                    <div class="metabolic-node node-protein" id="proteinNode">Proteínas</div>
+                    
+                    <!-- Conexões serão adicionadas via JavaScript -->
                 </div>
                 
-                <div class="reaction-area" id="reactionArea">
-                    <div class="reaction-equation" id="reactionEquation">
-                        Área de reações bioquímicas
+                <div class="mission-control">
+                    <button class="btn" id="activateBtn">Ativar Via Metabólica</button>
+                    <button class="btn btn-secondary" id="analyzeBtn">Analisar Problema</button>
+                    <button class="btn" id="challengeBtn">Desafio Bioquímico</button>
+                </div>
+                
+                <div class="mission-complete" id="missionComplete">
+                    <h2>Missão Cumprida!</h2>
+                    <p>Você restaurou com sucesso o metabolismo celular!</p>
+                    <div class="achievement">+1000 ATP Produzidos</div>
+                    <div class="achievement">Via Glicolítica Ativada</div>
+                    <div class="achievement">Cadeia Transportadora Restaurada</div>
+                    <button class="btn" id="nextMissionBtn">Próxima Missão</button>
+                </div>
+                
+                <!-- Moléculas flutuantes decorativas -->
+                <div class="floating-molecule molecule-1"></div>
+                <div class="floating-molecule molecule-2"></div>
+                <div class="floating-molecule molecule-3"></div>
+                <div class="floating-molecule molecule-4"></div>
+            </div>
+
+            <div class="mission-panel">
+                <div class="mission-info">
+                    <h3>Missão Atual</h3>
+                    <p id="currentMission">Ativar a via glicolítica para converter glicose em ATP</p>
+                </div>
+                
+                <div class="mission-stats">
+                    <div class="stat">
+                        <div class="stat-value" id="energyLevel">25%</div>
+                        <div class="stat-label">Energia Celular</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="atpCount">5</div>
+                        <div class="stat-label">ATP Produzido</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="missionProgress">1/5</div>
+                        <div class="stat-label">Missões</div>
                     </div>
                 </div>
                 
-                <div class="lab-equipment">
-                    <div class="equipment-item" id="microscope">
-                        🔬 Microscópio
-                    </div>
-                    <div class="equipment-item" id="centrifuge">
-                        🧪 Centrífuga
-                    </div>
-                    <div class="equipment-item" id="spectrometer">
-                        📊 Espectrômetro
-                    </div>
-                    <div class="equipment-item" id="reactor">
-                        ⚗️ Reator
+                <div class="progress-container">
+                    <div>Progresso da Missão</div>
+                    <div class="progress-bar">
+                        <div class="progress" id="missionProgressBar"></div>
                     </div>
                 </div>
                 
-                <div class="controls">
-                    <button id="resetBtn">Novo Experimento</button>
-                    <button id="hintBtn">Dica</button>
-                    <button id="experimentBtn">Experimento</button>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress" id="progressBar"></div>
-                </div>
-            </div>
-
-            <div class="info-panel">
-                <h2>Informações da Molécula</h2>
-                <div class="info-content" id="infoContent">
-                    <p>Clique em uma molécula para aprender sobre ela!</p>
+                <div class="molecule-storage" id="moleculeStorage">
+                    <div class="molecule-item" id="glucoseMolecule">Glicose</div>
+                    <div class="molecule-item" id="enzymeMolecule">Enzimas</div>
+                    <div class="molecule-item" id="oxygenMolecule">Oxigênio</div>
+                    <div class="molecule-item" id="co2Molecule">CO₂</div>
                 </div>
                 
-                <h2>Moléculas Analisadas</h2>
-                <div class="molecule-list" id="moleculeList">
-                    <!-- Itens serão adicionados dinamicamente -->
-                </div>
-                
-                <div class="game-stats">
-                    <div class="stat-item">
-                        <div class="stat-value" id="analyzedCount">0</div>
-                        <div class="stat-label">Analisadas</div>
+                <div class="challenge-container" id="challengeContainer" style="display: none;">
+                    <h3>Desafio Bioquímico</h3>
+                    <div class="challenge-question" id="challengeQuestion">
+                        <!-- Pergunta será inserida aqui -->
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="experimentScore">0</div>
-                        <div class="stat-label">Pontuação</div>
+                    <div class="challenge-options" id="challengeOptions">
+                        <!-- Opções serão inseridas aqui -->
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="knowledgeLevel">0%</div>
-                        <div class="stat-label">Conhecimento</div>
-                    </div>
+                    <button class="btn" id="submitAnswerBtn" style="display: none;">Confirmar Resposta</button>
                 </div>
             </div>
-        </div>
-
-        <div class="experiment-container" id="experimentContainer" style="display: none;">
-            <h2>Experimento Bioquímico</h2>
-            <div class="experiment-question" id="experimentQuestion">
-                <!-- Pergunta será inserida aqui -->
-            </div>
-            <div class="experiment-options" id="experimentOptions">
-                <!-- Opções serão inseridas aqui -->
-            </div>
-            <div class="score-board">
-                <div>Experimento: <span id="currentExperiment">1</span>/<span id="totalExperiments">5</span></div>
-                <div>Acertos: <span id="correctExperiments">0</span></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de Conclusão -->
-    <div class="modal" id="completionModal">
-        <div class="modal-content">
-            <h2>Experimento Concluído!</h2>
-            <p>Você dominou os conceitos fundamentais da bioquímica celular!</p>
-            <p>Sua pontuação final: <span id="finalScore">0</span></p>
-            <button class="close-modal" id="closeCompletionModal">Continuar Explorando</button>
-        </div>
-    </div>
-
-    <!-- Modal de Molécula -->
-    <div class="modal" id="moleculeModal">
-        <div class="modal-content">
-            <h2 id="moleculeModalTitle">Título</h2>
-            <p id="moleculeModalDescription">Descrição</p>
-            <div id="moleculeModalFormula" style="margin: 15px 0; font-size: 1.2rem; font-family: monospace;"></div>
-            <button class="close-modal" id="closeMoleculeModal">Fechar</button>
-        </div>
-    </div>
-
-    <!-- Modal de Reação -->
-    <div class="modal" id="reactionModal">
-        <div class="modal-content">
-            <h2 id="reactionModalTitle">Reação Bioquímica</h2>
-            <div id="reactionModalEquation" style="margin: 15px 0; font-size: 1.2rem; font-family: monospace; text-align: center;"></div>
-            <p id="reactionModalDescription">Descrição</p>
-            <button class="close-modal" id="closeReactionModal">Fechar</button>
         </div>
     </div>
 
     <script>
-        // Dados das moléculas
-        const moleculesData = [
-            {
-                id: 'glucose',
-                name: 'Glicose',
-                description: 'A glicose é um carboidrato simples (monossacarídeo) e a principal fonte de energia para as células. Através do processo de glicólise e respiração celular, a glicose é quebrada para produzir ATP. É também um componente fundamental de carboidratos mais complexos, como amido e celulose.',
-                formula: 'C₆H₁₂O₆',
-                color: '#56ab2f',
-                size: 80,
-                facts: [
-                    'Fonte primária de energia celular',
-                    'Monossacarídeo com 6 carbonos',
-                    'Produz ATP através da respiração celular',
-                    'Armazenada como glicogênio em animais'
-                ],
-                reactions: [
-                    {
-                        equation: 'C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ATP',
-                        description: 'Respiração celular: processo que quebra a glicose na presença de oxigênio para produzir ATP.'
-                    },
-                    {
-                        equation: 'C₆H₁₂O₆ → 2C₃H₆O₃ + 2ATP',
-                        description: 'Fermentação lática: quebra da glicose na ausência de oxigênio, produzindo lactato e ATP.'
-                    }
-                ]
-            },
-            {
-                id: 'atp',
-                name: 'ATP',
-                description: 'O ATP (adenosina trifosfato) é a principal molécula de transferência de energia nas células. Consiste em uma base nitrogenada (adenina), um açúcar (ribose) e três grupos fosfato. A quebra da ligação entre os grupos fosfato libera energia utilizável para os processos celulares.',
-                formula: 'C₁₀H₁₆N₅O₁₃P₃',
-                color: '#ff416c',
-                size: 70,
-                facts: [
-                    'Principal molécula de energia celular',
-                    'Contém três grupos fosfato',
-                    'Hidrólise do ATP libera energia',
-                    'Sintetizado na mitocôndria e cloroplastos'
-                ],
-                reactions: [
-                    {
-                        equation: 'ATP + H₂O → ADP + Pᵢ + energia',
-                        description: 'Hidrólise do ATP: quebra da molécula de ATP para liberar energia utilizável.'
-                    },
-                    {
-                        equation: 'ADP + Pᵢ + energia → ATP',
-                        description: 'Fosforilação: síntese de ATP a partir de ADP e fosfato inorgânico usando energia.'
-                    }
-                ]
-            },
-            {
-                id: 'amino-acid',
-                name: 'Aminoácido',
-                description: 'Os aminoácidos são as unidades fundamentais das proteínas. Existem 20 aminoácidos padrão que se diferenciam por suas cadeias laterais. Eles se ligam através de ligações peptídicas para formar cadeias polipeptídicas que se dobram em proteínas funcionais.',
-                formula: 'Variável (ex: C₂H₄NO₂R)',
-                color: '#7b4397',
-                size: 60,
-                facts: [
-                    'Unidades construtoras de proteínas',
-                    '20 tipos diferentes em seres vivos',
-                    'Possuem grupo amina e carboxila',
-                    'Ligam-se por ligações peptídicas'
-                ],
-                reactions: [
-                    {
-                        equation: 'Aminoácido + Aminoácido → Dipeptídeo + H₂O',
-                        description: 'Síntese peptídica: formação de ligação peptídica entre aminoácidos com liberação de água.'
-                    }
-                ]
-            },
-            {
-                id: 'enzyme',
-                name: 'Enzima',
-                description: 'As enzimas são proteínas especializadas que atuam como catalisadores biológicos, acelerando as reações químicas nas células sem serem consumidas no processo. Cada enzima é específica para um substrato e funciona diminuindo a energia de ativação necessária para a reação.',
-                formula: 'Proteína (estrutura complexa)',
-                color: '#00c9ff',
-                size: 90,
-                facts: [
-                    'Catalisadores biológicos',
-                    'Específicas para seus substratos',
-                    'Não são consumidas na reação',
-                    'Funcionam em pH e temperatura ótimos'
-                ],
-                reactions: [
-                    {
-                        equation: 'E + S ⇌ ES → E + P',
-                        description: 'Mecanismo enzimático: a enzima (E) se liga ao substrato (S) formando um complexo (ES) que se converte no produto (P).'
-                    }
-                ]
-            },
-            {
-                id: 'lipid',
-                name: 'Lipídio',
-                description: 'Os lipídios são um grupo diverso de moléculas hidrofóbicas que incluem gorduras, óleos, fosfolipídios e esteroides. Desempenham funções importantes como armazenamento de energia, componentes estruturais das membranas celulares e sinalização celular.',
-                formula: 'Variável (ex: C₅₅H₉₈O₆ para triglicerídeo)',
-                color: '#f46b45',
-                size: 75,
-                facts: [
-                    'Moléculas hidrofóbicas',
-                    'Funções: energia, estrutura, sinalização',
-                    'Incluem gorduras, fosfolipídios, esteroides',
-                    'Componentes das membranas celulares'
-                ],
-                reactions: [
-                    {
-                        equation: 'Ácido graxo + Glicerol → Triglicerídeo + 3H₂O',
-                        description: 'Esterificação: síntese de triglicerídeos a partir de ácidos graxos e glicerol.'
-                    },
-                    {
-                        equation: 'Triglicerídeo + 3H₂O → Glicerol + 3Ácidos graxos',
-                        description: 'Lipólise: quebra de triglicerídeos em glicerol e ácidos graxos.'
-                    }
-                ]
-            },
-            {
-                id: 'dna',
-                name: 'DNA',
-                description: 'O DNA (ácido desoxirribonucleico) é a molécula que armazena a informação genética em todos os organismos vivos. Consiste em duas cadeias antiparalelas organizadas em uma dupla hélice, com nucleotídeos contendo as bases adenina, timina, citosina e guanina.',
-                formula: 'Polímero de nucleotídeos',
-                color: '#8e2de2',
-                size: 100,
-                facts: [
-                    'Armazena informação genética',
-                    'Estrutura de dupla hélice',
-                    'Bases: A, T, C, G',
-                    'Replica-se semiconservativamente'
-                ],
-                reactions: [
-                    {
-                        equation: 'DNA + nucleotídeos → 2DNA (com DNA polimerase)',
-                        description: 'Replicação do DNA: síntese de uma nova fita de DNA usando uma fita existente como molde.'
-                    }
-                ]
-            },
-            {
-                id: 'rna',
-                name: 'RNA',
-                description: 'O RNA (ácido ribonucleico) é uma molécula essencial para a expressão gênica. Existem vários tipos, incluindo mRNA (mensageiro), tRNA (transferência) e rRNA (ribossomal). O RNA difere do DNA por ter ribose no lugar de desoxirribose e uracila no lugar de timina.',
-                formula: 'Polímero de ribonucleotídeos',
-                color: '#ffcc00',
-                size: 90,
-                facts: [
-                    'Envolvido na síntese proteica',
-                    'Tipos: mRNA, tRNA, rRNA',
-                    'Bases: A, U, C, G',
-                    'Fita simples (geralmente)'
-                ],
-                reactions: [
-                    {
-                        equation: 'DNA → RNA (com RNA polimerase)',
-                        description: 'Transcrição: síntese de RNA usando DNA como molde.'
-                    }
-                ]
-            },
-            {
-                id: 'protein',
-                name: 'Proteína',
-                description: 'As proteínas são macromoléculas formadas por cadeias de aminoácidos que se dobram em estruturas tridimensionais específicas. Desempenham diversas funções, incluindo catálise enzimática, suporte estrutural, transporte, defesa e regulação.',
-                formula: 'Cadeia polipeptídica (estrutura complexa)',
-                color: '#4a90e2',
-                size: 85,
-                facts: [
-                    'Funções diversas: enzimas, estrutura, transporte',
-                    'Estruturas: primária, secundária, terciária, quaternária',
-                    'Desnaturação perde a função',
-                    'Sintetizadas nos ribossomos'
-                ],
-                reactions: [
-                    {
-                        equation: 'Aminoácidos → Proteína (com ribossomos)',
-                        description: 'Tradução: síntese de proteínas a partir de aminoácidos usando informação do mRNA.'
-                    }
-                ]
-            }
-        ];
-
         // Estado do jogo
         const gameState = {
-            analyzedMolecules: [],
-            experimentScore: 0,
-            knowledgeLevel: 0,
-            currentExperiment: null,
-            experimentAnswers: 0,
-            totalExperimentQuestions: 0,
-            currentReaction: null
+            currentMission: 1,
+            totalMissions: 5,
+            energyLevel: 25,
+            atpProduced: 5,
+            activeMolecules: [],
+            connectionsActive: false,
+            currentChallenge: null
         };
 
-        // Perguntas dos experimentos
-        const experimentQuestions = [
+        // Missões do jogo
+        const missions = [
             {
-                question: "Qual molécula é a principal fonte de energia para as células?",
-                options: ["DNA", "Glicose", "Aminoácido", "Lipídio"],
-                correct: 1
+                id: 1,
+                title: "Ativação Glicolítica",
+                description: "Ative a via glicolítica para converter glicose em piruvato",
+                objective: "Conectar glicose às enzimas glicolíticas",
+                energyReward: 20,
+                atpReward: 10
             },
             {
-                question: "Qual é a função principal do ATP na célula?",
-                options: ["Armazenar informação genética", "Transferir energia", "Estrutura celular", "Catalisar reações"],
-                correct: 1
+                id: 2,
+                title: "Ciclo de Krebs",
+                description: "Inicie o ciclo de Krebs na mitocôndria para produzir NADH e FADH2",
+                objective: "Conectar piruvato à mitocôndria",
+                energyReward: 25,
+                atpReward: 15
             },
             {
-                question: "Como são chamadas as unidades fundamentais das proteínas?",
-                options: ["Nucleotídeos", "Monossacarídeos", "Aminoácidos", "Ácidos graxos"],
-                correct: 2
+                id: 3,
+                title: "Cadeia Transportadora",
+                description: "Ative a cadeia transportadora de elétrons para produzir ATP",
+                objective: "Conectar mitocôndria ao ATP",
+                energyReward: 30,
+                atpReward: 20
             },
             {
-                question: "O que são enzimas?",
-                options: ["Moléculas de armazenamento", "Catalisadores biológicos", "Componentes estruturais", "Hormônios"],
-                correct: 1
+                id: 4,
+                title: "Fosforilação Oxidativa",
+                description: "Otimize a fosforilação oxidativa para máxima produção de ATP",
+                objective: "Manter o fluxo de elétrons e prótons",
+                energyReward: 15,
+                atpReward: 25
             },
             {
-                question: "Qual molécula armazena a informação genética?",
-                options: ["RNA", "ATP", "DNA", "Proteína"],
-                correct: 2
-            },
-            {
-                question: "Qual destes é um tipo de lipídio?",
-                options: ["Glicose", "Triglicerídeo", "Aminoácido", "Nucleotídeo"],
-                correct: 1
-            },
-            {
-                question: "Qual processo produz ATP a partir da glicose?",
-                options: ["Fotossíntese", "Respiração celular", "Transcrição", "Tradução"],
-                correct: 1
-            },
-            {
-                question: "Onde ocorre a síntese de proteínas na célula?",
-                options: ["Núcleo", "Mitocôndria", "Ribossomo", "Complexo de Golgi"],
-                correct: 2
-            },
-            {
-                question: "Qual base nitrogenada é encontrada no RNA mas não no DNA?",
-                options: ["Adenina", "Timina", "Citosina", "Uracila"],
-                correct: 3
-            },
-            {
-                question: "Qual é a principal característica dos lipídios?",
-                options: ["Hidrofilia", "Hidrofobia", "Acidez", "Basicidade"],
-                correct: 1
+                id: 5,
+                title: "Balanced Energy",
+                description: "Equilibre todo o sistema metabólico para sustentabilidade",
+                objective: "Manter todas as vias ativas simultaneamente",
+                energyReward: 10,
+                atpReward: 30
             }
         ];
 
-        // Reações bioquímicas
-        const biochemicalReactions = [
+        // Desafios bioquímicos
+        const challenges = [
             {
-                id: 'respiration',
-                name: 'Respiração Celular',
-                equation: 'C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + 36ATP',
-                description: 'Processo aeróbico que quebra completamente a glicose para produzir ATP. Ocorre na mitocôndria e envolve três etapas: glicólise, ciclo de Krebs e cadeia transportadora de elétrons.'
+                question: "Qual é o produto final da glicólise?",
+                options: ["Glicose", "Piruvato", "ATP", "Oxigênio"],
+                correct: 1,
+                explanation: "A glicólise quebra a glicose em duas moléculas de piruvato."
             },
             {
-                id: 'photosynthesis',
-                name: 'Fotossíntese',
-                equation: '6CO₂ + 6H₂O + luz → C₆H₁₂O₆ + 6O₂',
-                description: 'Processo realizado por plantas, algas e algumas bactérias que converte energia luminosa em energia química, produzindo glicose a partir de CO₂ e água.'
+                question: "Onde ocorre o ciclo de Krebs?",
+                options: ["Citoplasma", "Núcleo", "Mitocôndria", "Ribossomo"],
+                correct: 2,
+                explanation: "O ciclo de Krebs ocorre na matriz mitocondrial."
             },
             {
-                id: 'protein-synthesis',
-                name: 'Síntese Proteica',
-                equation: 'DNA → RNA → Proteína',
-                description: 'Processo de expressão gênica que envolve a transcrição (DNA para RNA) e tradução (RNA para proteína). Ocorre no núcleo e ribossomos, respectivamente.'
+                question: "Qual molécula é a principal fonte de energia celular?",
+                options: ["DNA", "Glicose", "ATP", "Proteína"],
+                correct: 2,
+                explanation: "O ATP (adenosina trifosfato) é a principal molécula de transferência de energia."
             },
             {
-                id: 'fermentation',
-                name: 'Fermentação',
-                equation: 'C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + 2ATP',
-                description: 'Processo anaeróbico que quebra parcialmente a glicose para produzir ATP. Na fermentação alcoólica, produz etanol e CO₂.'
+                question: "Quantas moléculas de ATP são produzidas na respiração aeróbica?",
+                options: ["2 ATP", "10 ATP", "36 ATP", "100 ATP"],
+                correct: 2,
+                explanation: "A respiração aeróbica produz aproximadamente 36 ATP por molécula de glicose."
+            },
+            {
+                question: "Qual enzima catalisa a primeira etapa da glicólise?",
+                options: ["Hexoquinase", "DNA polimerase", "Amilase", "ATP sintase"],
+                correct: 0,
+                explanation: "A hexoquinase fosforila a glicose na primeira etapa da glicólise."
             }
         ];
 
@@ -803,386 +597,372 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeGame();
             setupEventListeners();
+            createConnections();
+            updateMissionDisplay();
         });
 
         function initializeGame() {
-            createMolecules();
-            updateMoleculeList();
-            updateStats();
-            setupEquipment();
-        }
-
-        function createMolecules() {
-            const labBench = document.getElementById('labBench');
-            
-            // Limpar bancada
-            labBench.innerHTML = '';
-            
-            // Criar moléculas em posições aleatórias
-            moleculesData.forEach(molecule => {
-                const moleculeElement = document.createElement('div');
-                moleculeElement.className = `molecule ${molecule.id}`;
-                moleculeElement.id = molecule.id;
-                moleculeElement.textContent = molecule.name.substring(0, 3);
-                
-                // Posicionamento aleatório, evitando sobreposição
-                let x, y;
-                let overlapping = true;
-                let attempts = 0;
-                
-                while (overlapping && attempts < 100) {
-                    x = Math.random() * (labBench.offsetWidth - molecule.size);
-                    y = Math.random() * (labBench.offsetHeight - molecule.size);
-                    
-                    overlapping = checkOverlap(x, y, molecule.size);
-                    attempts++;
-                }
-                
-                moleculeElement.style.left = `${x}px`;
-                moleculeElement.style.top = `${y}px`;
-                moleculeElement.style.width = `${molecule.size}px`;
-                moleculeElement.style.height = molecule.id === 'dna' || molecule.id === 'rna' ? 
-                    `${molecule.size/2}px` : `${molecule.size}px`;
-                
-                labBench.appendChild(moleculeElement);
-            });
-        }
-
-        function checkOverlap(x, y, size) {
-            const molecules = document.querySelectorAll('.molecule');
-            for (let molecule of molecules) {
-                const rect = molecule.getBoundingClientRect();
-                const benchRect = document.getElementById('labBench').getBoundingClientRect();
-                
-                const molX = rect.left - benchRect.left;
-                const molY = rect.top - benchRect.top;
-                const molWidth = molecule.offsetWidth;
-                const molHeight = molecule.offsetHeight;
-                
-                // Verificar se há sobreposição
-                if (x < molX + molWidth && x + size > molX && y < molY + molHeight && y + size > molY) {
-                    return true;
-                }
-            }
-            return false;
+            updateGameStats();
         }
 
         function setupEventListeners() {
-            // Event listeners para moléculas
-            document.querySelectorAll('.molecule').forEach(molecule => {
-                molecule.addEventListener('click', function() {
-                    const moleculeData = moleculesData.find(m => m.id === this.id);
-                    showMoleculeInfo(moleculeData);
-                    
-                    // Marcar como analisada se ainda não foi
-                    if (!gameState.analyzedMolecules.includes(this.id)) {
-                        gameState.analyzedMolecules.push(this.id);
-                        updateMoleculeList();
-                        updateStats();
-                        
-                        // Verificar se todas as moléculas foram analisadas
-                        if (gameState.analyzedMolecules.length === moleculesData.length) {
-                            showCompletionModal();
-                        }
-                    }
+            // Event listeners para nós metabólicos
+            document.querySelectorAll('.metabolic-node').forEach(node => {
+                node.addEventListener('click', function() {
+                    activateNode(this.id);
                 });
             });
 
             // Event listeners para botões
-            document.getElementById('resetBtn').addEventListener('click', function() {
-                createMolecules();
-                setupEventListeners(); // Reaplicar event listeners às novas moléculas
-                document.getElementById('reactionEquation').textContent = 'Área de reações bioquímicas';
+            document.getElementById('activateBtn').addEventListener('click', function() {
+                activateMetabolicPathway();
             });
 
-            document.getElementById('hintBtn').addEventListener('click', function() {
-                // Encontrar uma molécula não analisada
-                const unanalyzed = moleculesData.filter(m => !gameState.analyzedMolecules.includes(m.id));
-                if (unanalyzed.length > 0) {
-                    const randomMolecule = unanalyzed[Math.floor(Math.random() * unanalyzed.length)];
-                    const moleculeElement = document.getElementById(randomMolecule.id);
-                    
-                    // Piscar a molécula
-                    moleculeElement.style.boxShadow = '0 0 20px yellow';
-                    setTimeout(() => {
-                        moleculeElement.style.boxShadow = '';
-                    }, 1000);
-                } else {
-                    alert('Você já analisou todas as moléculas!');
-                }
+            document.getElementById('analyzeBtn').addEventListener('click', function() {
+                analyzeProblem();
             });
 
-            document.getElementById('experimentBtn').addEventListener('click', function() {
-                startExperiment();
+            document.getElementById('challengeBtn').addEventListener('click', function() {
+                startChallenge();
             });
 
-            // Event listeners para modais
-            document.getElementById('closeCompletionModal').addEventListener('click', function() {
-                document.getElementById('completionModal').style.display = 'none';
+            document.getElementById('submitAnswerBtn').addEventListener('click', function() {
+                submitAnswer();
             });
 
-            document.getElementById('closeMoleculeModal').addEventListener('click', function() {
-                document.getElementById('moleculeModal').style.display = 'none';
+            document.getElementById('nextMissionBtn').addEventListener('click', function() {
+                nextMission();
             });
 
-            document.getElementById('closeReactionModal').addEventListener('click', function() {
-                document.getElementById('reactionModal').style.display = 'none';
-            });
-
-            // Fechar modal ao clicar fora
-            window.addEventListener('click', function(event) {
-                const completionModal = document.getElementById('completionModal');
-                const moleculeModal = document.getElementById('moleculeModal');
-                const reactionModal = document.getElementById('reactionModal');
-                
-                if (event.target === completionModal) {
-                    completionModal.style.display = 'none';
-                }
-                if (event.target === moleculeModal) {
-                    moleculeModal.style.display = 'none';
-                }
-                if (event.target === reactionModal) {
-                    reactionModal.style.display = 'none';
-                }
+            // Event listeners para moléculas
+            document.querySelectorAll('.molecule-item').forEach(molecule => {
+                molecule.addEventListener('click', function() {
+                    toggleMolecule(this.id);
+                });
             });
         }
 
-        function setupEquipment() {
-            document.getElementById('microscope').addEventListener('click', function() {
-                showRandomMoleculeDetail();
-            });
-
-            document.getElementById('centrifuge').addEventListener('click', function() {
-                separateMolecules();
-            });
-
-            document.getElementById('spectrometer').addEventListener('click', function() {
-                analyzeComposition();
-            });
-
-            document.getElementById('reactor').addEventListener('click', function() {
-                showRandomReaction();
-            });
+        function createConnections() {
+            const pathway = document.getElementById('metabolicPathway');
+            
+            // Conexão Glicose -> Enzimas
+            createConnection('glucoseNode', 'enzymeNode', 0);
+            
+            // Conexão Enzimas -> Mitocôndria
+            createConnection('enzymeNode', 'mitochondriaNode', 1);
+            
+            // Conexão Mitocôndria -> ATP
+            createConnection('mitochondriaNode', 'atpNode', 2);
+            
+            // Conexão ATP -> Proteínas
+            createConnection('atpNode', 'proteinNode', 3);
+            
+            // Conexão Proteínas -> Enzimas
+            createConnection('proteinNode', 'enzymeNode', 4);
         }
 
-        function showMoleculeInfo(moleculeData) {
-            const infoContent = document.getElementById('infoContent');
-            let factsHTML = '';
+        function createConnection(fromId, toId, index) {
+            const from = document.getElementById(fromId);
+            const to = document.getElementById(toId);
+            const pathway = document.getElementById('metabolicPathway');
             
-            moleculeData.facts.forEach(fact => {
-                factsHTML += `<li>${fact}</li>`;
-            });
+            const fromRect = from.getBoundingClientRect();
+            const toRect = to.getBoundingClientRect();
+            const pathwayRect = pathway.getBoundingClientRect();
             
-            let reactionsHTML = '';
-            moleculeData.reactions.forEach(reaction => {
-                reactionsHTML += `<div style="margin-top: 10px;"><strong>${reaction.equation}</strong><br>${reaction.description}</div>`;
-            });
+            const fromX = fromRect.left - pathwayRect.left + from.offsetWidth / 2;
+            const fromY = fromRect.top - pathwayRect.top + from.offsetHeight / 2;
+            const toX = toRect.left - pathwayRect.left + to.offsetWidth / 2;
+            const toY = toRect.top - pathwayRect.top + to.offsetHeight / 2;
             
-            infoContent.innerHTML = `
-                <h3>${moleculeData.name}</h3>
-                <p><strong>Fórmula:</strong> ${moleculeData.formula}</p>
-                <p>${moleculeData.description}</p>
-                <h4>Características:</h4>
-                <ul>${factsHTML}</ul>
-                <h4>Reações Envolvidas:</h4>
-                ${reactionsHTML}
-            `;
+            // Calcular distância e ângulo
+            const distance = Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY - fromY, 2));
+            const angle = Math.atan2(toY - fromY, toX - fromX) * 180 / Math.PI;
             
-            // Mostrar modal com informações detalhadas
-            document.getElementById('moleculeModalTitle').textContent = moleculeData.name;
-            document.getElementById('moleculeModalDescription').textContent = moleculeData.description;
-            document.getElementById('moleculeModalFormula').textContent = moleculeData.formula;
-            document.getElementById('moleculeModal').style.display = 'flex';
+            // Criar elemento de conexão
+            const connection = document.createElement('div');
+            connection.className = 'connection';
+            connection.id = `connection-${index}`;
+            connection.style.width = `${distance}px`;
+            connection.style.left = `${fromX}px`;
+            connection.style.top = `${fromY}px`;
+            connection.style.transform = `rotate(${angle}deg)`;
+            
+            pathway.appendChild(connection);
+            
+            // Criar partícula de energia
+            createEnergyFlow(connection.id, fromX, fromY, distance, angle);
         }
 
-        function updateMoleculeList() {
-            const moleculeList = document.getElementById('moleculeList');
-            moleculeList.innerHTML = '';
+        function createEnergyFlow(connectionId, startX, startY, distance, angle) {
+            const pathway = document.getElementById('metabolicPathway');
             
-            moleculesData.forEach(molecule => {
-                const isAnalyzed = gameState.analyzedMolecules.includes(molecule.id);
-                const moleculeItem = document.createElement('div');
-                moleculeItem.className = `molecule-item ${isAnalyzed ? 'analyzed' : ''}`;
-                moleculeItem.textContent = molecule.name;
-                moleculeItem.addEventListener('click', function() {
-                    if (isAnalyzed) {
-                        showMoleculeInfo(molecule);
-                    } else {
-                        alert('Você ainda não analisou esta molécula! Clique nela na bancada para aprender sobre ela.');
-                    }
+            const energyFlow = document.createElement('div');
+            energyFlow.className = 'energy-flow';
+            energyFlow.style.left = `${startX}px`;
+            energyFlow.style.top = `${startY}px`;
+            energyFlow.style.setProperty('--flow-distance', `${distance}px`);
+            energyFlow.style.transform = `rotate(${angle}deg)`;
+            
+            pathway.appendChild(energyFlow);
+        }
+
+        function activateNode(nodeId) {
+            const node = document.getElementById(nodeId);
+            
+            // Adicionar efeito visual
+            node.style.transform = 'scale(1.1)';
+            node.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.7)';
+            
+            // Ativar molécula correspondente
+            const moleculeId = nodeId.replace('Node', 'Molecule');
+            const molecule = document.getElementById(moleculeId);
+            if (molecule) {
+                molecule.classList.add('activated');
+                if (!gameState.activeMolecules.includes(moleculeId)) {
+                    gameState.activeMolecules.push(moleculeId);
+                }
+            }
+            
+            // Verificar se a missão foi completada
+            checkMissionCompletion();
+            
+            // Remover efeito após um tempo
+            setTimeout(() => {
+                node.style.transform = '';
+                node.style.boxShadow = '';
+            }, 1000);
+        }
+
+        function activateMetabolicPathway() {
+            if (gameState.activeMolecules.length >= 2) {
+                // Ativar conexões
+                document.querySelectorAll('.connection').forEach(conn => {
+                    conn.classList.add('connection-active');
                 });
                 
-                moleculeList.appendChild(moleculeItem);
+                // Produzir ATP
+                gameState.atpProduced += 5;
+                gameState.energyLevel += 10;
+                
+                // Atualizar estatísticas
+                updateGameStats();
+                
+                // Verificar conclusão da missão
+                if (gameState.energyLevel >= 50) {
+                    completeMission();
+                }
+                
+                // Feedback visual
+                document.getElementById('atpNode').style.animation = 'pulse 0.5s 3';
+                setTimeout(() => {
+                    document.getElementById('atpNode').style.animation = '';
+                }, 1500);
+            } else {
+                alert('Ative pelo menos duas moléculas para iniciar a via metabólica!');
+            }
+        }
+
+        function analyzeProblem() {
+            const missingMolecules = ['glucoseMolecule', 'enzymeMolecule'].filter(
+                mol => !gameState.activeMolecules.includes(mol)
+            );
+            
+            if (missingMolecules.length > 0) {
+                alert(`Problema identificado: ${missingMolecules.length} molécula(s) essenciais não ativadas.`);
+                
+                // Destacar moléculas faltantes
+                missingMolecules.forEach(molId => {
+                    const molecule = document.getElementById(molId);
+                    molecule.style.animation = 'pulse 0.5s 3';
+                    setTimeout(() => {
+                        molecule.style.animation = '';
+                    }, 1500);
+                });
+            } else {
+                alert('Todas as moléculas essenciais estão ativadas. A via metabólica pode ser iniciada!');
+            }
+        }
+
+        function startChallenge() {
+            // Selecionar desafio aleatório
+            const randomIndex = Math.floor(Math.random() * challenges.length);
+            gameState.currentChallenge = challenges[randomIndex];
+            
+            // Exibir container de desafio
+            const container = document.getElementById('challengeContainer');
+            container.style.display = 'block';
+            
+            // Exibir pergunta
+            document.getElementById('challengeQuestion').textContent = gameState.currentChallenge.question;
+            
+            // Exibir opções
+            const optionsContainer = document.getElementById('challengeOptions');
+            optionsContainer.innerHTML = '';
+            
+            gameState.currentChallenge.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'challenge-option';
+                optionElement.textContent = option;
+                optionElement.dataset.index = index;
+                optionElement.addEventListener('click', function() {
+                    selectOption(this);
+                });
+                optionsContainer.appendChild(optionElement);
             });
+            
+            // Mostrar botão de confirmar
+            document.getElementById('submitAnswerBtn').style.display = 'block';
         }
 
-        function updateStats() {
-            const analyzedCount = document.getElementById('analyzedCount');
-            const experimentScore = document.getElementById('experimentScore');
-            const knowledgeLevel = document.getElementById('knowledgeLevel');
-            const progressBar = document.getElementById('progressBar');
+        function selectOption(optionElement) {
+            // Remover seleção anterior
+            document.querySelectorAll('.challenge-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
             
-            analyzedCount.textContent = gameState.analyzedMolecules.length;
-            experimentScore.textContent = gameState.experimentScore;
-            
-            // Calcular nível de conhecimento
-            const analysisPercentage = (gameState.analyzedMolecules.length / moleculesData.length) * 50;
-            const experimentPercentage = (gameState.experimentScore / 10) * 50;
-            gameState.knowledgeLevel = Math.min(analysisPercentage + experimentPercentage, 100);
-            
-            knowledgeLevel.textContent = `${Math.round(gameState.knowledgeLevel)}%`;
-            progressBar.style.width = `${gameState.knowledgeLevel}%`;
+            // Selecionar nova opção
+            optionElement.classList.add('selected');
         }
 
-        function startExperiment() {
-            // Embaralhar perguntas
-            const shuffledQuestions = [...experimentQuestions].sort(() => Math.random() - 0.5);
-            gameState.currentExperiment = shuffledQuestions.slice(0, 5); // Usar apenas 5 perguntas
-            gameState.experimentAnswers = 0;
-            gameState.totalExperimentQuestions = gameState.currentExperiment.length;
+        function submitAnswer() {
+            const selectedOption = document.querySelector('.challenge-option.selected');
             
-            // Mostrar container do experimento
-            document.getElementById('experimentContainer').style.display = 'block';
-            
-            // Atualizar contadores
-            document.getElementById('currentExperiment').textContent = '1';
-            document.getElementById('totalExperiments').textContent = gameState.totalExperimentQuestions;
-            document.getElementById('correctExperiments').textContent = '0';
-            
-            // Mostrar primeira pergunta
-            showExperimentQuestion(0);
-        }
-
-        function showExperimentQuestion(index) {
-            if (index >= gameState.currentExperiment.length) {
-                endExperiment();
+            if (!selectedOption) {
+                alert('Selecione uma resposta antes de confirmar!');
                 return;
             }
             
-            const question = gameState.currentExperiment[index];
-            const experimentQuestion = document.getElementById('experimentQuestion');
-            const experimentOptions = document.getElementById('experimentOptions');
-            
-            // Atualizar contador
-            document.getElementById('currentExperiment').textContent = index + 1;
-            
-            // Mostrar pergunta
-            experimentQuestion.textContent = question.question;
-            
-            // Mostrar opções
-            experimentOptions.innerHTML = '';
-            question.options.forEach((option, i) => {
-                const optionElement = document.createElement('div');
-                optionElement.className = 'experiment-option';
-                optionElement.textContent = option;
-                optionElement.addEventListener('click', function() {
-                    checkExperimentAnswer(i, question.correct, index);
-                });
-                experimentOptions.appendChild(optionElement);
-            });
-        }
-
-        function checkExperimentAnswer(selected, correct, questionIndex) {
-            const options = document.querySelectorAll('.experiment-option');
-            
-            // Destacar resposta correta e incorreta
-            options.forEach((option, i) => {
-                if (i === correct) {
-                    option.style.background = 'rgba(0, 200, 0, 0.5)';
-                } else if (i === selected && i !== correct) {
-                    option.style.background = 'rgba(200, 0, 0, 0.5)';
-                }
-                option.style.pointerEvents = 'none'; // Desabilitar cliques adicionais
-            });
-            
-            // Atualizar pontuação
-            if (selected === correct) {
-                gameState.experimentAnswers++;
-                document.getElementById('correctExperiments').textContent = gameState.experimentAnswers;
-            }
-            
-            // Próxima pergunta após um breve delay
-            setTimeout(() => {
-                showExperimentQuestion(questionIndex + 1);
-            }, 2000);
-        }
-
-        function endExperiment() {
-            // Esconder container do experimento
-            document.getElementById('experimentContainer').style.display = 'none';
-            
-            // Atualizar pontuação total
-            gameState.experimentScore += gameState.experimentAnswers;
+            const selectedIndex = parseInt(selectedOption.dataset.index);
+            const isCorrect = selectedIndex === gameState.currentChallenge.correct;
             
             // Mostrar resultado
-            alert(`Experimento concluído! Você acertou ${gameState.experimentAnswers} de ${gameState.totalExperimentQuestions} perguntas.`);
+            document.querySelectorAll('.challenge-option').forEach((opt, index) => {
+                if (index === gameState.currentChallenge.correct) {
+                    opt.classList.add('correct');
+                } else if (index === selectedIndex && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+                opt.style.pointerEvents = 'none';
+            });
+            
+            // Recompensa ou penalidade
+            if (isCorrect) {
+                gameState.energyLevel += 15;
+                gameState.atpProduced += 8;
+                alert(`Correto! ${gameState.currentChallenge.explanation}`);
+            } else {
+                gameState.energyLevel -= 5;
+                alert(`Incorreto! ${gameState.currentChallenge.explanation}`);
+            }
             
             // Atualizar estatísticas
-            updateStats();
+            updateGameStats();
+            
+            // Esconder botão de confirmar
+            document.getElementById('submitAnswerBtn').style.display = 'none';
+            
+            // Esconder desafio após um tempo
+            setTimeout(() => {
+                document.getElementById('challengeContainer').style.display = 'none';
+            }, 3000);
         }
 
-        function showCompletionModal() {
-            document.getElementById('finalScore').textContent = gameState.experimentScore + gameState.analyzedMolecules.length * 10;
-            document.getElementById('completionModal').style.display = 'flex';
-        }
-
-        // Funcionalidades do equipamento de laboratório
-        function showRandomMoleculeDetail() {
-            const analyzed = moleculesData.filter(m => gameState.analyzedMolecules.includes(m.id));
-            if (analyzed.length > 0) {
-                const randomMolecule = analyzed[Math.floor(Math.random() * analyzed.length)];
-                const randomReaction = randomMolecule.reactions[Math.floor(Math.random() * randomMolecule.reactions.length)];
-                
-                document.getElementById('reactionEquation').innerHTML = `
-                    <strong>${randomMolecule.name}</strong><br>
-                    ${randomMolecule.formula}<br>
-                    <div style="margin-top: 10px;">Reação: ${randomReaction.equation}</div>
-                `;
+        function toggleMolecule(moleculeId) {
+            const molecule = document.getElementById(moleculeId);
+            
+            if (molecule.classList.contains('activated')) {
+                molecule.classList.remove('activated');
+                gameState.activeMolecules = gameState.activeMolecules.filter(id => id !== moleculeId);
             } else {
-                alert('Analise pelo menos uma molécula para usar o microscópio!');
+                molecule.classList.add('activated');
+                if (!gameState.activeMolecules.includes(moleculeId)) {
+                    gameState.activeMolecules.push(moleculeId);
+                }
             }
         }
 
-        function separateMolecules() {
-            const molecules = document.querySelectorAll('.molecule');
-            molecules.forEach(molecule => {
-                const x = Math.random() * (document.getElementById('labBench').offsetWidth - molecule.offsetWidth);
-                const y = Math.random() * (document.getElementById('labBench').offsetHeight - molecule.offsetHeight);
-                molecule.style.left = `${x}px`;
-                molecule.style.top = `${y}px`;
+        function checkMissionCompletion() {
+            // Verificar se todas as moléculas necessárias estão ativadas
+            const requiredMolecules = ['glucoseMolecule', 'enzymeMolecule'];
+            const allActive = requiredMolecules.every(mol => 
+                gameState.activeMolecules.includes(mol)
+            );
+            
+            if (allActive && gameState.energyLevel >= 50) {
+                completeMission();
+            }
+        }
+
+        function completeMission() {
+            const currentMission = missions[gameState.currentMission - 1];
+            
+            // Recompensas
+            gameState.energyLevel += currentMission.energyReward;
+            gameState.atpProduced += currentMission.atpReward;
+            
+            // Atualizar estatísticas
+            updateGameStats();
+            
+            // Mostrar tela de missão completa
+            document.getElementById('missionComplete').style.display = 'block';
+            
+            // Efeitos visuais
+            document.querySelectorAll('.metabolic-node').forEach(node => {
+                node.style.animation = 'pulse 1s infinite';
             });
-            document.getElementById('reactionEquation').textContent = 'Moléculas separadas pela centrífuga!';
         }
 
-        function analyzeComposition() {
-            const unanalyzed = moleculesData.filter(m => !gameState.analyzedMolecules.includes(m.id));
-            if (unanalyzed.length > 0) {
-                const randomMolecule = unanalyzed[Math.floor(Math.random() * unanalyzed.length)];
-                document.getElementById('reactionEquation').textContent = `Espectrômetro detectou: ${randomMolecule.name} (${randomMolecule.formula})`;
+        function nextMission() {
+            // Avançar para próxima missão
+            if (gameState.currentMission < gameState.totalMissions) {
+                gameState.currentMission++;
                 
-                // Dar uma dica visual
-                const moleculeElement = document.getElementById(randomMolecule.id);
-                moleculeElement.style.boxShadow = '0 0 20px #00c6ff';
-                setTimeout(() => {
-                    moleculeElement.style.boxShadow = '';
-                }, 2000);
+                // Resetar moléculas ativas
+                gameState.activeMolecules = [];
+                document.querySelectorAll('.molecule-item').forEach(mol => {
+                    mol.classList.remove('activated');
+                });
+                
+                // Resetar conexões
+                document.querySelectorAll('.connection').forEach(conn => {
+                    conn.classList.remove('connection-active');
+                });
+                
+                // Atualizar display
+                updateMissionDisplay();
+                updateGameStats();
+                
+                // Esconder tela de missão completa
+                document.getElementById('missionComplete').style.display = 'none';
+                
+                // Remover efeitos visuais
+                document.querySelectorAll('.metabolic-node').forEach(node => {
+                    node.style.animation = '';
+                });
             } else {
-                document.getElementById('reactionEquation').textContent = 'Todas as moléculas já foram analisadas!';
+                alert('Parabéns! Você completou todas as missões!');
             }
         }
 
-        function showRandomReaction() {
-            const randomReaction = biochemicalReactions[Math.floor(Math.random() * biochemicalReactions.length)];
+        function updateMissionDisplay() {
+            const currentMission = missions[gameState.currentMission - 1];
             
-            document.getElementById('reactionModalTitle').textContent = randomReaction.name;
-            document.getElementById('reactionModalEquation').textContent = randomReaction.equation;
-            document.getElementById('reactionModalDescription').textContent = randomReaction.description;
-            document.getElementById('reactionModal').style.display = 'flex';
+            document.getElementById('currentMission').textContent = currentMission.description;
+            document.getElementById('missionProgress').textContent = `${gameState.currentMission}/${gameState.totalMissions}`;
             
-            document.getElementById('reactionEquation').innerHTML = `
-                <strong>${randomReaction.name}</strong><br>
-                ${randomReaction.equation}
-            `;
+            const progressPercent = (gameState.currentMission / gameState.totalMissions) * 100;
+            document.getElementById('missionProgressBar').style.width = `${progressPercent}%`;
+        }
+
+        function updateGameStats() {
+            document.getElementById('energyLevel').textContent = `${Math.min(gameState.energyLevel, 100)}%`;
+            document.getElementById('atpCount').textContent = gameState.atpProduced;
+            
+            // Limitar energia a 100%
+            if (gameState.energyLevel > 100) {
+                gameState.energyLevel = 100;
+            }
         }
     </script>
 </body>
