@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bioquímica Celular: Missão Metabólica</title>
+    <title>Caça-Palavras - Bioquímica Celular</title>
     <style>
         * {
             margin: 0;
@@ -71,7 +71,7 @@
             border-left: 4px solid #ff9a9e;
         }
 
-        .mission-area {
+        .game-area {
             display: grid;
             grid-template-columns: 1fr 300px;
             gap: 20px;
@@ -79,12 +79,12 @@
         }
 
         @media (max-width: 768px) {
-            .mission-area {
+            .game-area {
                 grid-template-columns: 1fr;
             }
         }
 
-        .cell-environment {
+        .word-search-container {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
             padding: 20px;
@@ -96,7 +96,7 @@
             overflow: hidden;
         }
 
-        .mission-panel {
+        .game-panel {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
             padding: 20px;
@@ -105,97 +105,47 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .pathway {
-            position: relative;
-            height: 400px;
-            margin: 20px 0;
-            background: rgba(0, 0, 0, 0.2);
+        .word-grid {
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            gap: 2px;
+            margin: 20px auto;
+            width: fit-content;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
             border-radius: 10px;
-            border: 2px dashed rgba(255, 255, 255, 0.2);
         }
 
-        .metabolic-node {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
+        .grid-cell {
+            width: 30px;
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            font-size: 0.9rem;
-            padding: 5px;
+            transition: all 0.2s;
+            user-select: none;
         }
 
-        .metabolic-node:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        .grid-cell:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
-        .node-glucose {
-            background: linear-gradient(135deg, #56ab2f, #a8e063);
-            top: 50px;
-            left: 50px;
-        }
-
-        .node-atp {
-            background: linear-gradient(135deg, #ff416c, #ff4b2b);
-            top: 50px;
-            right: 50px;
-        }
-
-        .node-enzyme {
-            background: linear-gradient(135deg, #00c9ff, #92fe9d);
-            top: 200px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .node-mitochondria {
-            background: linear-gradient(135deg, #7b4397, #dc2430);
-            bottom: 50px;
-            left: 50px;
-        }
-
-        .node-protein {
-            background: linear-gradient(135deg, #4a90e2, #2457a3);
-            bottom: 50px;
-            right: 50px;
-        }
-
-        .connection {
-            position: absolute;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.5);
-            transform-origin: 0 0;
-        }
-
-        .connection-active {
-            background: linear-gradient(to right, #ff9a9e, #fad0c4);
-            box-shadow: 0 0 10px rgba(255, 154, 158, 0.7);
-        }
-
-        .energy-flow {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
+        .grid-cell.selected {
             background: #ff9a9e;
-            box-shadow: 0 0 10px #ff9a9e;
-            animation: flow 2s linear infinite;
+            color: #0c2461;
+            transform: scale(1.1);
         }
 
-        @keyframes flow {
-            0% { transform: translateX(0); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translateX(var(--flow-distance)); opacity: 0; }
+        .grid-cell.found {
+            background: #a8e063;
+            color: #0c2461;
         }
 
-        .mission-control {
+        .game-control {
             display: flex;
             gap: 10px;
             margin-top: 20px;
@@ -229,7 +179,7 @@
             background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
         }
 
-        .mission-info {
+        .game-info {
             background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
             padding: 15px;
@@ -237,7 +187,7 @@
             border-left: 4px solid #a1c4fd;
         }
 
-        .mission-stats {
+        .game-stats {
             display: flex;
             justify-content: space-between;
             background: rgba(0, 0, 0, 0.3);
@@ -274,7 +224,7 @@
             transition: width 0.5s;
         }
 
-        .challenge-container {
+        .word-list {
             background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
             padding: 20px;
@@ -282,65 +232,35 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .challenge-question {
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-            line-height: 1.5;
-        }
-
-        .challenge-options {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .challenge-option {
+        .word-item {
+            padding: 8px 12px;
+            margin: 5px 0;
             background: rgba(255, 255, 255, 0.1);
-            padding: 12px;
             border-radius: 8px;
-            cursor: pointer;
             transition: all 0.3s;
-        }
-
-        .challenge-option:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateX(5px);
-        }
-
-        .challenge-option.correct {
-            background: rgba(76, 175, 80, 0.3);
-            border-left: 4px solid #4caf50;
-        }
-
-        .challenge-option.incorrect {
-            background: rgba(244, 67, 54, 0.3);
-            border-left: 4px solid #f44336;
-        }
-
-        .molecule-storage {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            flex-wrap: wrap;
+            align-items: center;
         }
 
-        .molecule-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-            border: 1px solid transparent;
+        .word-item.found {
+            background: rgba(168, 224, 99, 0.3);
+            border-left: 4px solid #a8e063;
+            text-decoration: line-through;
+            color: #a8e063;
         }
 
-        .molecule-item.activated {
-            background: rgba(255, 154, 158, 0.3);
-            border-color: #ff9a9e;
-            box-shadow: 0 0 10px rgba(255, 154, 158, 0.5);
+        .word-item::before {
+            content: '○';
+            margin-right: 10px;
+            font-size: 0.8rem;
         }
 
-        .mission-complete {
+        .word-item.found::before {
+            content: '✓';
+            color: #a8e063;
+        }
+
+        .game-complete {
             text-align: center;
             padding: 30px;
             background: rgba(0, 0, 0, 0.5);
@@ -349,7 +269,7 @@
             display: none;
         }
 
-        .mission-complete h2 {
+        .game-complete h2 {
             font-size: 2rem;
             margin-bottom: 15px;
             background: linear-gradient(to right, #ff9a9e, #fad0c4, #a1c4fd);
@@ -408,43 +328,64 @@
             right: 10%;
             animation-delay: 3s;
         }
+
+        .hint-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .hint-text {
+            font-size: 0.9rem;
+            color: #a1c4fd;
+            margin-bottom: 10px;
+        }
+
+        .word-direction {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="game-container">
         <header>
-            <h1>Bioquímica Celular: Missão Metabólica</h1>
-            <p class="subtitle">Sua missão: restaurar o metabolismo celular e produzir energia!</p>
+            <h1>Caça-Palavras - Bioquímica Celular</h1>
+            <p class="subtitle">Encontre os termos bioquímicos escondidos na grade!</p>
             <div class="mission-brief">
-                <p>A célula está com baixa energia! Você foi designado como Especialista em Bioquímica para diagnosticar e resolver os problemas metabólicos. Complete as missões para restaurar a produção de ATP!</p>
+                <p>Explore o mundo da bioquímica celular encontrando palavras relacionadas ao metabolismo, organelas e processos celulares. Clique e arraste para selecionar as palavras!</p>
             </div>
         </header>
 
-        <div class="mission-area">
-            <div class="cell-environment">
-                <div class="pathway" id="metabolicPathway">
-                    <div class="metabolic-node node-glucose" id="glucoseNode">Glicose</div>
-                    <div class="metabolic-node node-atp" id="atpNode">ATP</div>
-                    <div class="metabolic-node node-enzyme" id="enzymeNode">Enzimas</div>
-                    <div class="metabolic-node node-mitochondria" id="mitochondriaNode">Mitocôndria</div>
-                    <div class="metabolic-node node-protein" id="proteinNode">Proteínas</div>
-                    
-                    <!-- Conexões serão adicionadas via JavaScript -->
+        <div class="game-area">
+            <div class="word-search-container">
+                <div class="word-grid" id="wordGrid">
+                    <!-- Grade será preenchida via JavaScript -->
                 </div>
                 
-                <div class="mission-control">
-                    <button class="btn" id="activateBtn">Ativar Via Metabólica</button>
-                    <button class="btn btn-secondary" id="analyzeBtn">Analisar Problema</button>
-                    <button class="btn" id="challengeBtn">Desafio Bioquímico</button>
+                <div class="game-control">
+                    <button class="btn" id="hintBtn">Dica</button>
+                    <button class="btn btn-secondary" id="resetBtn">Reiniciar Seleção</button>
+                    <button class="btn" id="solveBtn">Resolver Tudo</button>
                 </div>
                 
-                <div class="mission-complete" id="missionComplete">
-                    <h2>Missão Cumprida!</h2>
-                    <p>Você restaurou com sucesso o metabolismo celular!</p>
-                    <div class="achievement">+1000 ATP Produzidos</div>
-                    <div class="achievement">Via Glicolítica Ativada</div>
-                    <div class="achievement">Cadeia Transportadora Restaurada</div>
-                    <button class="btn" id="nextMissionBtn">Próxima Missão</button>
+                <div class="hint-container" id="hintContainer">
+                    <div class="hint-text" id="hintText"></div>
+                </div>
+                
+                <div class="game-complete" id="gameComplete">
+                    <h2>Parabéns!</h2>
+                    <p>Você encontrou todas as palavras bioquímicas!</p>
+                    <div class="achievement">Mestre da Bioquímica</div>
+                    <div class="achievement">Explorador Celular</div>
+                    <div class="achievement">Detetive Metabólico</div>
+                    <button class="btn" id="newGameBtn">Novo Jogo</button>
                 </div>
                 
                 <!-- Moléculas flutuantes decorativas -->
@@ -454,50 +395,37 @@
                 <div class="floating-molecule molecule-4"></div>
             </div>
 
-            <div class="mission-panel">
-                <div class="mission-info">
-                    <h3>Missão Atual</h3>
-                    <p id="currentMission">Ativar a via glicolítica para converter glicose em ATP</p>
+            <div class="game-panel">
+                <div class="game-info">
+                    <h3>Instruções</h3>
+                    <p>Encontre as palavras na horizontal, vertical e diagonal. Clique e arraste para selecionar.</p>
                 </div>
                 
-                <div class="mission-stats">
+                <div class="game-stats">
                     <div class="stat">
-                        <div class="stat-value" id="energyLevel">25%</div>
-                        <div class="stat-label">Energia Celular</div>
+                        <div class="stat-value" id="foundCount">0</div>
+                        <div class="stat-label">Encontradas</div>
                     </div>
                     <div class="stat">
-                        <div class="stat-value" id="atpCount">5</div>
-                        <div class="stat-label">ATP Produzido</div>
+                        <div class="stat-value" id="totalCount">15</div>
+                        <div class="stat-label">Total</div>
                     </div>
                     <div class="stat">
-                        <div class="stat-value" id="missionProgress">1/5</div>
-                        <div class="stat-label">Missões</div>
+                        <div class="stat-value" id="hintsLeft">3</div>
+                        <div class="stat-label">Dicas</div>
                     </div>
                 </div>
                 
                 <div class="progress-container">
-                    <div>Progresso da Missão</div>
+                    <div>Progresso do Jogo</div>
                     <div class="progress-bar">
-                        <div class="progress" id="missionProgressBar"></div>
+                        <div class="progress" id="gameProgressBar"></div>
                     </div>
                 </div>
                 
-                <div class="molecule-storage" id="moleculeStorage">
-                    <div class="molecule-item" id="glucoseMolecule">Glicose</div>
-                    <div class="molecule-item" id="enzymeMolecule">Enzimas</div>
-                    <div class="molecule-item" id="oxygenMolecule">Oxigênio</div>
-                    <div class="molecule-item" id="co2Molecule">CO₂</div>
-                </div>
-                
-                <div class="challenge-container" id="challengeContainer" style="display: none;">
-                    <h3>Desafio Bioquímico</h3>
-                    <div class="challenge-question" id="challengeQuestion">
-                        <!-- Pergunta será inserida aqui -->
-                    </div>
-                    <div class="challenge-options" id="challengeOptions">
-                        <!-- Opções serão inseridas aqui -->
-                    </div>
-                    <button class="btn" id="submitAnswerBtn" style="display: none;">Confirmar Resposta</button>
+                <div class="word-list" id="wordList">
+                    <h3>Palavras para Encontrar</h3>
+                    <!-- Lista de palavras será preenchida via JavaScript -->
                 </div>
             </div>
         </div>
@@ -506,463 +434,484 @@
     <script>
         // Estado do jogo
         const gameState = {
-            currentMission: 1,
-            totalMissions: 5,
-            energyLevel: 25,
-            atpProduced: 5,
-            activeMolecules: [],
-            connectionsActive: false,
-            currentChallenge: null
+            wordsFound: 0,
+            totalWords: 15,
+            hintsUsed: 0,
+            maxHints: 3,
+            selectedCells: [],
+            isSelecting: false,
+            words: [
+                { word: "GLICOSE", found: false, direction: "horizontal" },
+                { word: "ATP", found: false, direction: "diagonal" },
+                { word: "ENZIMA", found: false, direction: "vertical" },
+                { word: "MITOCONDRIA", found: false, direction: "horizontal" },
+                { word: "PROTEINA", found: false, direction: "vertical" },
+                { word: "LIPIDIO", found: false, direction: "diagonal" },
+                { word: "METABOLISMO", found: false, direction: "horizontal" },
+                { word: "RESPIRACAO", found: false, direction: "vertical" },
+                { word: "FOTOSSINTESE", found: false, direction: "horizontal" },
+                { word: "CATABOLISMO", found: false, direction: "diagonal" },
+                { word: "ANABOLISMO", found: false, direction: "vertical" },
+                { word: "GLICOLISE", found: false, direction: "horizontal" },
+                { word: "KREBS", found: false, direction: "diagonal" },
+                { word: "CLOROPLASTO", found: false, direction: "vertical" },
+                { word: "RIBOSSOMO", found: false, direction: "horizontal" }
+            ],
+            grid: [],
+            gridSize: 15
         };
-
-        // Missões do jogo
-        const missions = [
-            {
-                id: 1,
-                title: "Ativação Glicolítica",
-                description: "Ative a via glicolítica para converter glicose em piruvato",
-                objective: "Conectar glicose às enzimas glicolíticas",
-                energyReward: 20,
-                atpReward: 10
-            },
-            {
-                id: 2,
-                title: "Ciclo de Krebs",
-                description: "Inicie o ciclo de Krebs na mitocôndria para produzir NADH e FADH2",
-                objective: "Conectar piruvato à mitocôndria",
-                energyReward: 25,
-                atpReward: 15
-            },
-            {
-                id: 3,
-                title: "Cadeia Transportadora",
-                description: "Ative a cadeia transportadora de elétrons para produzir ATP",
-                objective: "Conectar mitocôndria ao ATP",
-                energyReward: 30,
-                atpReward: 20
-            },
-            {
-                id: 4,
-                title: "Fosforilação Oxidativa",
-                description: "Otimize a fosforilação oxidativa para máxima produção de ATP",
-                objective: "Manter o fluxo de elétrons e prótons",
-                energyReward: 15,
-                atpReward: 25
-            },
-            {
-                id: 5,
-                title: "Balanced Energy",
-                description: "Equilibre todo o sistema metabólico para sustentabilidade",
-                objective: "Manter todas as vias ativas simultaneamente",
-                energyReward: 10,
-                atpReward: 30
-            }
-        ];
-
-        // Desafios bioquímicos
-        const challenges = [
-            {
-                question: "Qual é o produto final da glicólise?",
-                options: ["Glicose", "Piruvato", "ATP", "Oxigênio"],
-                correct: 1,
-                explanation: "A glicólise quebra a glicose em duas moléculas de piruvato."
-            },
-            {
-                question: "Onde ocorre o ciclo de Krebs?",
-                options: ["Citoplasma", "Núcleo", "Mitocôndria", "Ribossomo"],
-                correct: 2,
-                explanation: "O ciclo de Krebs ocorre na matriz mitocondrial."
-            },
-            {
-                question: "Qual molécula é a principal fonte de energia celular?",
-                options: ["DNA", "Glicose", "ATP", "Proteína"],
-                correct: 2,
-                explanation: "O ATP (adenosina trifosfato) é a principal molécula de transferência de energia."
-            },
-            {
-                question: "Quantas moléculas de ATP são produzidas na respiração aeróbica?",
-                options: ["2 ATP", "10 ATP", "36 ATP", "100 ATP"],
-                correct: 2,
-                explanation: "A respiração aeróbica produz aproximadamente 36 ATP por molécula de glicose."
-            },
-            {
-                question: "Qual enzima catalisa a primeira etapa da glicólise?",
-                options: ["Hexoquinase", "DNA polimerase", "Amilase", "ATP sintase"],
-                correct: 0,
-                explanation: "A hexoquinase fosforila a glicose na primeira etapa da glicólise."
-            }
-        ];
 
         // Inicialização do jogo
         document.addEventListener('DOMContentLoaded', function() {
             initializeGame();
             setupEventListeners();
-            createConnections();
-            updateMissionDisplay();
+            createWordGrid();
+            updateGameDisplay();
         });
 
         function initializeGame() {
-            updateGameStats();
+            // Inicializar grade vazia
+            gameState.grid = Array(gameState.gridSize).fill().map(() => 
+                Array(gameState.gridSize).fill('')
+            );
+            
+            // Preencher grade com letras aleatórias
+            fillGridWithRandomLetters();
+            
+            // Colocar palavras na grade
+            placeWordsInGrid();
         }
 
-        function setupEventListeners() {
-            // Event listeners para nós metabólicos
-            document.querySelectorAll('.metabolic-node').forEach(node => {
-                node.addEventListener('click', function() {
-                    activateNode(this.id);
-                });
-            });
+        function fillGridWithRandomLetters() {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            for (let i = 0; i < gameState.gridSize; i++) {
+                for (let j = 0; j < gameState.gridSize; j++) {
+                    if (gameState.grid[i][j] === '') {
+                        gameState.grid[i][j] = letters[Math.floor(Math.random() * letters.length)];
+                    }
+                }
+            }
+        }
 
-            // Event listeners para botões
-            document.getElementById('activateBtn').addEventListener('click', function() {
-                activateMetabolicPathway();
-            });
-
-            document.getElementById('analyzeBtn').addEventListener('click', function() {
-                analyzeProblem();
-            });
-
-            document.getElementById('challengeBtn').addEventListener('click', function() {
-                startChallenge();
-            });
-
-            document.getElementById('submitAnswerBtn').addEventListener('click', function() {
-                submitAnswer();
-            });
-
-            document.getElementById('nextMissionBtn').addEventListener('click', function() {
-                nextMission();
-            });
-
-            // Event listeners para moléculas
-            document.querySelectorAll('.molecule-item').forEach(molecule => {
-                molecule.addEventListener('click', function() {
-                    toggleMolecule(this.id);
-                });
+        function placeWordsInGrid() {
+            gameState.words.forEach(wordObj => {
+                let placed = false;
+                let attempts = 0;
+                
+                while (!placed && attempts < 100) {
+                    const direction = getRandomDirection();
+                    const { startRow, startCol, valid } = getValidStartPosition(wordObj.word, direction);
+                    
+                    if (valid) {
+                        placeWord(wordObj.word, startRow, startCol, direction);
+                        wordObj.startRow = startRow;
+                        wordObj.startCol = startCol;
+                        wordObj.direction = direction;
+                        placed = true;
+                    }
+                    attempts++;
+                }
             });
         }
 
-        function createConnections() {
-            const pathway = document.getElementById('metabolicPathway');
-            
-            // Conexão Glicose -> Enzimas
-            createConnection('glucoseNode', 'enzymeNode', 0);
-            
-            // Conexão Enzimas -> Mitocôndria
-            createConnection('enzymeNode', 'mitochondriaNode', 1);
-            
-            // Conexão Mitocôndria -> ATP
-            createConnection('mitochondriaNode', 'atpNode', 2);
-            
-            // Conexão ATP -> Proteínas
-            createConnection('atpNode', 'proteinNode', 3);
-            
-            // Conexão Proteínas -> Enzimas
-            createConnection('proteinNode', 'enzymeNode', 4);
+        function getRandomDirection() {
+            const directions = ['horizontal', 'vertical', 'diagonal'];
+            return directions[Math.floor(Math.random() * directions.length)];
         }
 
-        function createConnection(fromId, toId, index) {
-            const from = document.getElementById(fromId);
-            const to = document.getElementById(toId);
-            const pathway = document.getElementById('metabolicPathway');
+        function getValidStartPosition(word, direction) {
+            let maxRow, maxCol;
             
-            const fromRect = from.getBoundingClientRect();
-            const toRect = to.getBoundingClientRect();
-            const pathwayRect = pathway.getBoundingClientRect();
+            switch (direction) {
+                case 'horizontal':
+                    maxRow = gameState.gridSize - 1;
+                    maxCol = gameState.gridSize - word.length;
+                    break;
+                case 'vertical':
+                    maxRow = gameState.gridSize - word.length;
+                    maxCol = gameState.gridSize - 1;
+                    break;
+                case 'diagonal':
+                    maxRow = gameState.gridSize - word.length;
+                    maxCol = gameState.gridSize - word.length;
+                    break;
+            }
             
-            const fromX = fromRect.left - pathwayRect.left + from.offsetWidth / 2;
-            const fromY = fromRect.top - pathwayRect.top + from.offsetHeight / 2;
-            const toX = toRect.left - pathwayRect.left + to.offsetWidth / 2;
-            const toY = toRect.top - pathwayRect.top + to.offsetHeight / 2;
+            const startRow = Math.floor(Math.random() * (maxRow + 1));
+            const startCol = Math.floor(Math.random() * (maxCol + 1));
             
-            // Calcular distância e ângulo
-            const distance = Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY - fromY, 2));
-            const angle = Math.atan2(toY - fromY, toX - fromX) * 180 / Math.PI;
+            // Verificar se a posição é válida (não sobrepõe outras palavras de forma conflitante)
+            const valid = checkPositionValidity(word, startRow, startCol, direction);
             
-            // Criar elemento de conexão
-            const connection = document.createElement('div');
-            connection.className = 'connection';
-            connection.id = `connection-${index}`;
-            connection.style.width = `${distance}px`;
-            connection.style.left = `${fromX}px`;
-            connection.style.top = `${fromY}px`;
-            connection.style.transform = `rotate(${angle}deg)`;
-            
-            pathway.appendChild(connection);
-            
-            // Criar partícula de energia
-            createEnergyFlow(connection.id, fromX, fromY, distance, angle);
+            return { startRow, startCol, valid };
         }
 
-        function createEnergyFlow(connectionId, startX, startY, distance, angle) {
-            const pathway = document.getElementById('metabolicPathway');
-            
-            const energyFlow = document.createElement('div');
-            energyFlow.className = 'energy-flow';
-            energyFlow.style.left = `${startX}px`;
-            energyFlow.style.top = `${startY}px`;
-            energyFlow.style.setProperty('--flow-distance', `${distance}px`);
-            energyFlow.style.transform = `rotate(${angle}deg)`;
-            
-            pathway.appendChild(energyFlow);
+        function checkPositionValidity(word, row, col, direction) {
+            for (let i = 0; i < word.length; i++) {
+                let currentRow = row;
+                let currentCol = col;
+                
+                switch (direction) {
+                    case 'horizontal':
+                        currentCol = col + i;
+                        break;
+                    case 'vertical':
+                        currentRow = row + i;
+                        break;
+                    case 'diagonal':
+                        currentRow = row + i;
+                        currentCol = col + i;
+                        break;
+                }
+                
+                // Se a célula já contém uma letra diferente da palavra atual, posição inválida
+                if (gameState.grid[currentRow][currentCol] !== '' && 
+                    gameState.grid[currentRow][currentCol] !== word[i]) {
+                    return false;
+                }
+            }
+            return true;
         }
 
-        function activateNode(nodeId) {
-            const node = document.getElementById(nodeId);
+        function placeWord(word, row, col, direction) {
+            for (let i = 0; i < word.length; i++) {
+                let currentRow = row;
+                let currentCol = col;
+                
+                switch (direction) {
+                    case 'horizontal':
+                        currentCol = col + i;
+                        break;
+                    case 'vertical':
+                        currentRow = row + i;
+                        break;
+                    case 'diagonal':
+                        currentRow = row + i;
+                        currentCol = col + i;
+                        break;
+                }
+                
+                gameState.grid[currentRow][currentCol] = word[i];
+            }
+        }
+
+        function createWordGrid() {
+            const gridElement = document.getElementById('wordGrid');
+            gridElement.innerHTML = '';
             
-            // Adicionar efeito visual
-            node.style.transform = 'scale(1.1)';
-            node.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.7)';
-            
-            // Ativar molécula correspondente
-            const moleculeId = nodeId.replace('Node', 'Molecule');
-            const molecule = document.getElementById(moleculeId);
-            if (molecule) {
-                molecule.classList.add('activated');
-                if (!gameState.activeMolecules.includes(moleculeId)) {
-                    gameState.activeMolecules.push(moleculeId);
+            for (let i = 0; i < gameState.gridSize; i++) {
+                for (let j = 0; j < gameState.gridSize; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'grid-cell';
+                    cell.textContent = gameState.grid[i][j];
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    
+                    cell.addEventListener('mousedown', startSelection);
+                    cell.addEventListener('mouseenter', continueSelection);
+                    cell.addEventListener('mouseup', endSelection);
+                    
+                    // Para dispositivos touch
+                    cell.addEventListener('touchstart', startSelection);
+                    cell.addEventListener('touchmove', continueSelectionTouch);
+                    cell.addEventListener('touchend', endSelection);
+                    
+                    gridElement.appendChild(cell);
                 }
             }
             
-            // Verificar se a missão foi completada
-            checkMissionCompletion();
+            // Criar lista de palavras
+            createWordList();
+        }
+
+        function createWordList() {
+            const wordListElement = document.getElementById('wordList');
+            // Limpar lista existente
+            const existingList = wordListElement.querySelectorAll('.word-item');
+            existingList.forEach(item => item.remove());
             
-            // Remover efeito após um tempo
+            // Adicionar palavras
+            gameState.words.forEach(wordObj => {
+                const wordItem = document.createElement('div');
+                wordItem.className = 'word-item';
+                wordItem.textContent = wordObj.word;
+                wordItem.id = `word-${wordObj.word}`;
+                
+                const directionSpan = document.createElement('span');
+                directionSpan.className = 'word-direction';
+                directionSpan.textContent = getDirectionSymbol(wordObj.direction);
+                wordItem.appendChild(directionSpan);
+                
+                wordListElement.appendChild(wordItem);
+            });
+        }
+
+        function getDirectionSymbol(direction) {
+            switch (direction) {
+                case 'horizontal': return '→';
+                case 'vertical': return '↓';
+                case 'diagonal': return '↘';
+                default: return '';
+            }
+        }
+
+        function startSelection(e) {
+            e.preventDefault();
+            gameState.isSelecting = true;
+            gameState.selectedCells = [];
+            
+            const cell = e.target.classList.contains('grid-cell') ? e.target : 
+                        e.target.closest('.grid-cell');
+            
+            if (cell) {
+                selectCell(cell);
+            }
+        }
+
+        function continueSelection(e) {
+            if (!gameState.isSelecting) return;
+            
+            const cell = e.target.classList.contains('grid-cell') ? e.target : 
+                        e.target.closest('.grid-cell');
+            
+            if (cell && !gameState.selectedCells.includes(cell)) {
+                selectCell(cell);
+            }
+        }
+
+        function continueSelectionTouch(e) {
+            if (!gameState.isSelecting) return;
+            e.preventDefault();
+            
+            const touch = e.touches[0];
+            const element = document.elementFromPoint(touch.clientX, touch.clientY);
+            
+            const cell = element && element.classList.contains('grid-cell') ? element : 
+                        element && element.closest('.grid-cell');
+            
+            if (cell && !gameState.selectedCells.includes(cell)) {
+                selectCell(cell);
+            }
+        }
+
+        function endSelection() {
+            if (!gameState.isSelecting) return;
+            gameState.isSelecting = false;
+            
+            // Verificar se a seleção forma uma palavra
+            checkWordSelection();
+            
+            // Limpar seleção após um breve momento
             setTimeout(() => {
-                node.style.transform = '';
-                node.style.boxShadow = '';
+                clearSelection();
             }, 1000);
         }
 
-        function activateMetabolicPathway() {
-            if (gameState.activeMolecules.length >= 2) {
-                // Ativar conexões
-                document.querySelectorAll('.connection').forEach(conn => {
-                    conn.classList.add('connection-active');
-                });
-                
-                // Produzir ATP
-                gameState.atpProduced += 5;
-                gameState.energyLevel += 10;
-                
-                // Atualizar estatísticas
-                updateGameStats();
-                
-                // Verificar conclusão da missão
-                if (gameState.energyLevel >= 50) {
-                    completeMission();
-                }
-                
-                // Feedback visual
-                document.getElementById('atpNode').style.animation = 'pulse 0.5s 3';
-                setTimeout(() => {
-                    document.getElementById('atpNode').style.animation = '';
-                }, 1500);
-            } else {
-                alert('Ative pelo menos duas moléculas para iniciar a via metabólica!');
-            }
+        function selectCell(cell) {
+            cell.classList.add('selected');
+            gameState.selectedCells.push(cell);
         }
 
-        function analyzeProblem() {
-            const missingMolecules = ['glucoseMolecule', 'enzymeMolecule'].filter(
-                mol => !gameState.activeMolecules.includes(mol)
+        function clearSelection() {
+            gameState.selectedCells.forEach(cell => {
+                if (!cell.classList.contains('found')) {
+                    cell.classList.remove('selected');
+                }
+            });
+            gameState.selectedCells = [];
+        }
+
+        function checkWordSelection() {
+            if (gameState.selectedCells.length < 2) return;
+            
+            // Obter texto da seleção
+            const selectedWord = gameState.selectedCells.map(cell => cell.textContent).join('');
+            
+            // Verificar se corresponde a alguma palavra
+            const foundWord = gameState.words.find(wordObj => 
+                wordObj.word === selectedWord || 
+                wordObj.word === selectedWord.split('').reverse().join('')
             );
             
-            if (missingMolecules.length > 0) {
-                alert(`Problema identificado: ${missingMolecules.length} molécula(s) essenciais não ativadas.`);
+            if (foundWord && !foundWord.found) {
+                // Marcar palavra como encontrada
+                foundWord.found = true;
+                gameState.wordsFound++;
                 
-                // Destacar moléculas faltantes
-                missingMolecules.forEach(molId => {
-                    const molecule = document.getElementById(molId);
-                    molecule.style.animation = 'pulse 0.5s 3';
-                    setTimeout(() => {
-                        molecule.style.animation = '';
-                    }, 1500);
+                // Marcar células como encontradas
+                gameState.selectedCells.forEach(cell => {
+                    cell.classList.remove('selected');
+                    cell.classList.add('found');
                 });
+                
+                // Atualizar lista de palavras
+                const wordItem = document.getElementById(`word-${foundWord.word}`);
+                if (wordItem) {
+                    wordItem.classList.add('found');
+                }
+                
+                // Atualizar display do jogo
+                updateGameDisplay();
+                
+                // Verificar se o jogo foi completado
+                checkGameCompletion();
+                
+                // Feedback visual
+                showFeedback(`Parabéns! Você encontrou: ${foundWord.word}`, 'success');
             } else {
-                alert('Todas as moléculas essenciais estão ativadas. A via metabólica pode ser iniciada!');
+                showFeedback('Palavra não encontrada. Tente novamente!', 'error');
             }
         }
 
-        function startChallenge() {
-            // Selecionar desafio aleatório
-            const randomIndex = Math.floor(Math.random() * challenges.length);
-            gameState.currentChallenge = challenges[randomIndex];
+        function showFeedback(message, type) {
+            // Criar elemento de feedback
+            const feedback = document.createElement('div');
+            feedback.textContent = message;
+            feedback.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 10px 20px;
+                border-radius: 5px;
+                background: ${type === 'success' ? '#4caf50' : '#f44336'};
+                color: white;
+                z-index: 1000;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            `;
             
-            // Exibir container de desafio
-            const container = document.getElementById('challengeContainer');
-            container.style.display = 'block';
+            document.body.appendChild(feedback);
             
-            // Exibir pergunta
-            document.getElementById('challengeQuestion').textContent = gameState.currentChallenge.question;
-            
-            // Exibir opções
-            const optionsContainer = document.getElementById('challengeOptions');
-            optionsContainer.innerHTML = '';
-            
-            gameState.currentChallenge.options.forEach((option, index) => {
-                const optionElement = document.createElement('div');
-                optionElement.className = 'challenge-option';
-                optionElement.textContent = option;
-                optionElement.dataset.index = index;
-                optionElement.addEventListener('click', function() {
-                    selectOption(this);
-                });
-                optionsContainer.appendChild(optionElement);
-            });
-            
-            // Mostrar botão de confirmar
-            document.getElementById('submitAnswerBtn').style.display = 'block';
+            // Remover após alguns segundos
+            setTimeout(() => {
+                feedback.remove();
+            }, 2000);
         }
 
-        function selectOption(optionElement) {
-            // Remover seleção anterior
-            document.querySelectorAll('.challenge-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            
-            // Selecionar nova opção
-            optionElement.classList.add('selected');
+        function checkGameCompletion() {
+            if (gameState.wordsFound === gameState.totalWords) {
+                document.getElementById('gameComplete').style.display = 'block';
+            }
         }
 
-        function submitAnswer() {
-            const selectedOption = document.querySelector('.challenge-option.selected');
+        function updateGameDisplay() {
+            document.getElementById('foundCount').textContent = gameState.wordsFound;
+            document.getElementById('totalCount').textContent = gameState.totalWords;
+            document.getElementById('hintsLeft').textContent = gameState.maxHints - gameState.hintsUsed;
             
-            if (!selectedOption) {
-                alert('Selecione uma resposta antes de confirmar!');
+            const progressPercent = (gameState.wordsFound / gameState.totalWords) * 100;
+            document.getElementById('gameProgressBar').style.width = `${progressPercent}%`;
+        }
+
+        function setupEventListeners() {
+            document.getElementById('hintBtn').addEventListener('click', showHint);
+            document.getElementById('resetBtn').addEventListener('click', clearSelection);
+            document.getElementById('solveBtn').addEventListener('click', solveAll);
+            document.getElementById('newGameBtn').addEventListener('click', newGame);
+        }
+
+        function showHint() {
+            if (gameState.hintsUsed >= gameState.maxHints) {
+                showFeedback('Você já usou todas as dicas!', 'error');
                 return;
             }
             
-            const selectedIndex = parseInt(selectedOption.dataset.index);
-            const isCorrect = selectedIndex === gameState.currentChallenge.correct;
+            // Encontrar uma palavra não encontrada
+            const unsolvedWord = gameState.words.find(word => !word.found);
             
-            // Mostrar resultado
-            document.querySelectorAll('.challenge-option').forEach((opt, index) => {
-                if (index === gameState.currentChallenge.correct) {
-                    opt.classList.add('correct');
-                } else if (index === selectedIndex && !isCorrect) {
-                    opt.classList.add('incorrect');
+            if (unsolvedWord) {
+                gameState.hintsUsed++;
+                
+                // Mostrar dica
+                const hintContainer = document.getElementById('hintContainer');
+                const hintText = document.getElementById('hintText');
+                
+                hintText.textContent = `Dica: A palavra "${unsolvedWord.word}" está na direção ${unsolvedWord.direction}`;
+                hintContainer.style.display = 'block';
+                
+                // Destacar a primeira letra da palavra
+                const firstLetterRow = unsolvedWord.startRow;
+                const firstLetterCol = unsolvedWord.startCol;
+                const firstLetterCell = document.querySelector(`.grid-cell[data-row="${firstLetterRow}"][data-col="${firstLetterCol}"]`);
+                
+                if (firstLetterCell) {
+                    firstLetterCell.style.animation = 'pulse 1s 3';
+                    setTimeout(() => {
+                        firstLetterCell.style.animation = '';
+                    }, 3000);
                 }
-                opt.style.pointerEvents = 'none';
+                
+                updateGameDisplay();
+                
+                // Esconder dica após alguns segundos
+                setTimeout(() => {
+                    hintContainer.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function solveAll() {
+            if (confirm('Tem certeza que deseja resolver todas as palavras?')) {
+                gameState.words.forEach(wordObj => {
+                    if (!wordObj.found) {
+                        wordObj.found = true;
+                        gameState.wordsFound++;
+                        
+                        // Marcar todas as células da palavra como encontradas
+                        for (let i = 0; i < wordObj.word.length; i++) {
+                            let row = wordObj.startRow;
+                            let col = wordObj.startCol;
+                            
+                            switch (wordObj.direction) {
+                                case 'horizontal':
+                                    col = wordObj.startCol + i;
+                                    break;
+                                case 'vertical':
+                                    row = wordObj.startRow + i;
+                                    break;
+                                case 'diagonal':
+                                    row = wordObj.startRow + i;
+                                    col = wordObj.startCol + i;
+                                    break;
+                            }
+                            
+                            const cell = document.querySelector(`.grid-cell[data-row="${row}"][data-col="${col}"]`);
+                            if (cell) {
+                                cell.classList.add('found');
+                            }
+                        }
+                        
+                        // Atualizar lista
+                        const wordItem = document.getElementById(`word-${wordObj.word}`);
+                        if (wordItem) {
+                            wordItem.classList.add('found');
+                        }
+                    }
+                });
+                
+                updateGameDisplay();
+                checkGameCompletion();
+            }
+        }
+
+        function newGame() {
+            // Reiniciar estado do jogo
+            gameState.wordsFound = 0;
+            gameState.hintsUsed = 0;
+            gameState.selectedCells = [];
+            
+            gameState.words.forEach(wordObj => {
+                wordObj.found = false;
             });
             
-            // Recompensa ou penalidade
-            if (isCorrect) {
-                gameState.energyLevel += 15;
-                gameState.atpProduced += 8;
-                alert(`Correto! ${gameState.currentChallenge.explanation}`);
-            } else {
-                gameState.energyLevel -= 5;
-                alert(`Incorreto! ${gameState.currentChallenge.explanation}`);
-            }
+            // Recomeçar o jogo
+            initializeGame();
+            createWordGrid();
+            updateGameDisplay();
             
-            // Atualizar estatísticas
-            updateGameStats();
-            
-            // Esconder botão de confirmar
-            document.getElementById('submitAnswerBtn').style.display = 'none';
-            
-            // Esconder desafio após um tempo
-            setTimeout(() => {
-                document.getElementById('challengeContainer').style.display = 'none';
-            }, 3000);
-        }
-
-        function toggleMolecule(moleculeId) {
-            const molecule = document.getElementById(moleculeId);
-            
-            if (molecule.classList.contains('activated')) {
-                molecule.classList.remove('activated');
-                gameState.activeMolecules = gameState.activeMolecules.filter(id => id !== moleculeId);
-            } else {
-                molecule.classList.add('activated');
-                if (!gameState.activeMolecules.includes(moleculeId)) {
-                    gameState.activeMolecules.push(moleculeId);
-                }
-            }
-        }
-
-        function checkMissionCompletion() {
-            // Verificar se todas as moléculas necessárias estão ativadas
-            const requiredMolecules = ['glucoseMolecule', 'enzymeMolecule'];
-            const allActive = requiredMolecules.every(mol => 
-                gameState.activeMolecules.includes(mol)
-            );
-            
-            if (allActive && gameState.energyLevel >= 50) {
-                completeMission();
-            }
-        }
-
-        function completeMission() {
-            const currentMission = missions[gameState.currentMission - 1];
-            
-            // Recompensas
-            gameState.energyLevel += currentMission.energyReward;
-            gameState.atpProduced += currentMission.atpReward;
-            
-            // Atualizar estatísticas
-            updateGameStats();
-            
-            // Mostrar tela de missão completa
-            document.getElementById('missionComplete').style.display = 'block';
-            
-            // Efeitos visuais
-            document.querySelectorAll('.metabolic-node').forEach(node => {
-                node.style.animation = 'pulse 1s infinite';
-            });
-        }
-
-        function nextMission() {
-            // Avançar para próxima missão
-            if (gameState.currentMission < gameState.totalMissions) {
-                gameState.currentMission++;
-                
-                // Resetar moléculas ativas
-                gameState.activeMolecules = [];
-                document.querySelectorAll('.molecule-item').forEach(mol => {
-                    mol.classList.remove('activated');
-                });
-                
-                // Resetar conexões
-                document.querySelectorAll('.connection').forEach(conn => {
-                    conn.classList.remove('connection-active');
-                });
-                
-                // Atualizar display
-                updateMissionDisplay();
-                updateGameStats();
-                
-                // Esconder tela de missão completa
-                document.getElementById('missionComplete').style.display = 'none';
-                
-                // Remover efeitos visuais
-                document.querySelectorAll('.metabolic-node').forEach(node => {
-                    node.style.animation = '';
-                });
-            } else {
-                alert('Parabéns! Você completou todas as missões!');
-            }
-        }
-
-        function updateMissionDisplay() {
-            const currentMission = missions[gameState.currentMission - 1];
-            
-            document.getElementById('currentMission').textContent = currentMission.description;
-            document.getElementById('missionProgress').textContent = `${gameState.currentMission}/${gameState.totalMissions}`;
-            
-            const progressPercent = (gameState.currentMission / gameState.totalMissions) * 100;
-            document.getElementById('missionProgressBar').style.width = `${progressPercent}%`;
-        }
-
-        function updateGameStats() {
-            document.getElementById('energyLevel').textContent = `${Math.min(gameState.energyLevel, 100)}%`;
-            document.getElementById('atpCount').textContent = gameState.atpProduced;
-            
-            // Limitar energia a 100%
-            if (gameState.energyLevel > 100) {
-                gameState.energyLevel = 100;
-            }
+            // Esconder tela de conclusão
+            document.getElementById('gameComplete').style.display = 'none';
+            document.getElementById('hintContainer').style.display = 'none';
         }
     </script>
 </body>
