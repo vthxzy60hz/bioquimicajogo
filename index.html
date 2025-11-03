@@ -286,49 +286,6 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .floating-molecule {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-            opacity: 0.7;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-            100% { transform: translateY(0) rotate(360deg); }
-        }
-
-        .molecule-1 {
-            background: radial-gradient(circle, #56ab2f, #a8e063);
-            top: 10%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .molecule-2 {
-            background: radial-gradient(circle, #ff416c, #ff4b2b);
-            top: 20%;
-            right: 15%;
-            animation-delay: 1s;
-        }
-
-        .molecule-3 {
-            background: radial-gradient(circle, #00c9ff, #92fe9d);
-            bottom: 15%;
-            left: 20%;
-            animation-delay: 2s;
-        }
-
-        .molecule-4 {
-            background: radial-gradient(circle, #7b4397, #dc2430);
-            bottom: 25%;
-            right: 10%;
-            animation-delay: 3s;
-        }
-
         .hint-container {
             background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
@@ -351,6 +308,84 @@
             font-size: 0.8rem;
             margin-left: 10px;
         }
+
+        /* Nova seção de desenvolvedores */
+        .developers-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .developers-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, #ff9a9e, #fad0c4, #a1c4fd);
+        }
+
+        .developers-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #ff9a9e, #fad0c4, #a1c4fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .developers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .developer-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .developer-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .developer-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .developer-name {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .developer-role {
+            font-size: 1rem;
+            color: #a1c4fd;
+            margin-bottom: 10px;
+        }
+
+        .developer-class {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
     </style>
 </head>
 <body>
@@ -372,7 +407,6 @@
                 <div class="game-control">
                     <button class="btn" id="hintBtn">Dica</button>
                     <button class="btn btn-secondary" id="resetBtn">Reiniciar Seleção</button>
-                    <button class="btn" id="solveBtn">Resolver Tudo</button>
                 </div>
                 
                 <div class="hint-container" id="hintContainer">
@@ -387,12 +421,6 @@
                     <div class="achievement">Detetive Metabólico</div>
                     <button class="btn" id="newGameBtn">Novo Jogo</button>
                 </div>
-                
-                <!-- Moléculas flutuantes decorativas -->
-                <div class="floating-molecule molecule-1"></div>
-                <div class="floating-molecule molecule-2"></div>
-                <div class="floating-molecule molecule-3"></div>
-                <div class="floating-molecule molecule-4"></div>
             </div>
 
             <div class="game-panel">
@@ -429,6 +457,39 @@
                 </div>
             </div>
         </div>
+
+        <!-- Nova seção de desenvolvedores -->
+        <div class="developers-section">
+            <h2 class="developers-title">Desenvolvido por</h2>
+            <p>Este jogo educativo foi criado com dedicação pelos seguintes desenvolvedores:</p>
+            <div class="developers-grid">
+                <div class="developer-card">
+                    <div class="developer-icon">
+                        👨‍💻
+                    </div>
+                    <div class="developer-name">Vítor Hugo</div>
+                    <div class="developer-role">Desenvolvedor Principal</div>
+                    <div class="developer-class">Turma 211</div>
+                </div>
+                <div class="developer-card">
+                    <div class="developer-icon">
+                        🔬
+                    </div>
+                    <div class="developer-name">Gabrielly</div>
+                    <div class="developer-role">Pesquisadora</div>
+                    <div class="developer-class">Turma 211</div>
+                </div>
+                <div class="developer-card">
+                    <div class="developer-icon">
+                        🧪
+                    </div>
+                    <div class="developer-name">Davi</div>
+                    <div class="developer-role">Testador</div>
+                    <div class="developer-class">Turma 211</div>
+                </div>
+            </div>
+            <p style="margin-top: 20px; font-style: italic;">Projeto educacional desenvolvido para o estudo de Bioquímica Celular</p>
+        </div>
     </div>
 
     <script>
@@ -461,6 +522,25 @@
             gridSize: 15
         };
 
+        // Grade com letras aleatórias mas mantendo as palavras
+        const fixedGrid = [
+            "ANABOLISMOKREBSQGF",
+            "ZRESPIRACAOBWLHMN",
+            "GLICOSEPCVDJTXSIC",
+            "PQLBFGHJKMNPRXLOR",
+            "FOTOSSINTESEYROXZ",
+            "TUVWXYZALMNOXLOPQ",
+            "XYCATABOLISMORAST",
+            "BCDEFGHIKTUVWSXTY",
+            "MITOCONDRIAXEUVWX",
+            "YZABCDEFGIRSTUVWX",
+            "LIPIDIOGLICOLISEY",
+            "ZOXPQRSTUMVWXYZAB",
+            "METABOLISMOCDEFGH",
+            "IJKLMNOPQORSTUVWX",
+            "YZABCDEFRIBOSSOMO"
+        ];
+
         // Inicialização do jogo
         document.addEventListener('DOMContentLoaded', function() {
             initializeGame();
@@ -470,129 +550,36 @@
         });
 
         function initializeGame() {
-            // Inicializar grade vazia
-            gameState.grid = Array(gameState.gridSize).fill().map(() => 
-                Array(gameState.gridSize).fill('')
-            );
+            // Inicializar grade com a grade fixa
+            gameState.grid = fixedGrid.map(row => row.split(''));
             
-            // Preencher grade com letras aleatórias
-            fillGridWithRandomLetters();
-            
-            // Colocar palavras na grade
-            placeWordsInGrid();
-        }
+            // Definir posições fixas para cada palavra
+            const wordPositions = [
+                { word: "GLICOSE", row: 2, col: 0, direction: "horizontal" },
+                { word: "ATP", row: 5, col: 10, direction: "diagonal" },
+                { word: "ENZIMA", row: 1, col: 8, direction: "vertical" },
+                { word: "MITOCONDRIA", row: 8, col: 0, direction: "horizontal" },
+                { word: "PROTEINA", row: 3, col: 12, direction: "vertical" },
+                { word: "LIPIDIO", row: 10, col: 0, direction: "horizontal" },
+                { word: "METABOLISMO", row: 12, col: 0, direction: "horizontal" },
+                { word: "RESPIRACAO", row: 1, col: 1, direction: "vertical" },
+                { word: "FOTOSSINTESE", row: 4, col: 0, direction: "horizontal" },
+                { word: "CATABOLISMO", row: 6, col: 2, direction: "horizontal" },
+                { word: "ANABOLISMO", row: 0, col: 0, direction: "horizontal" },
+                { word: "GLICOLISE", row: 10, col: 7, direction: "horizontal" },
+                { word: "KREBS", row: 0, col: 9, direction: "horizontal" },
+                { word: "CLOROPLASTO", row: 2, col: 13, direction: "vertical" },
+                { word: "RIBOSSOMO", row: 14, col: 8, direction: "horizontal" }
+            ];
 
-        function fillGridWithRandomLetters() {
-            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            for (let i = 0; i < gameState.gridSize; i++) {
-                for (let j = 0; j < gameState.gridSize; j++) {
-                    if (gameState.grid[i][j] === '') {
-                        gameState.grid[i][j] = letters[Math.floor(Math.random() * letters.length)];
-                    }
-                }
-            }
-        }
-
-        function placeWordsInGrid() {
-            gameState.words.forEach(wordObj => {
-                let placed = false;
-                let attempts = 0;
-                
-                while (!placed && attempts < 100) {
-                    const direction = getRandomDirection();
-                    const { startRow, startCol, valid } = getValidStartPosition(wordObj.word, direction);
-                    
-                    if (valid) {
-                        placeWord(wordObj.word, startRow, startCol, direction);
-                        wordObj.startRow = startRow;
-                        wordObj.startCol = startCol;
-                        wordObj.direction = direction;
-                        placed = true;
-                    }
-                    attempts++;
+            wordPositions.forEach(pos => {
+                const wordObj = gameState.words.find(w => w.word === pos.word);
+                if (wordObj) {
+                    wordObj.startRow = pos.row;
+                    wordObj.startCol = pos.col;
+                    wordObj.direction = pos.direction;
                 }
             });
-        }
-
-        function getRandomDirection() {
-            const directions = ['horizontal', 'vertical', 'diagonal'];
-            return directions[Math.floor(Math.random() * directions.length)];
-        }
-
-        function getValidStartPosition(word, direction) {
-            let maxRow, maxCol;
-            
-            switch (direction) {
-                case 'horizontal':
-                    maxRow = gameState.gridSize - 1;
-                    maxCol = gameState.gridSize - word.length;
-                    break;
-                case 'vertical':
-                    maxRow = gameState.gridSize - word.length;
-                    maxCol = gameState.gridSize - 1;
-                    break;
-                case 'diagonal':
-                    maxRow = gameState.gridSize - word.length;
-                    maxCol = gameState.gridSize - word.length;
-                    break;
-            }
-            
-            const startRow = Math.floor(Math.random() * (maxRow + 1));
-            const startCol = Math.floor(Math.random() * (maxCol + 1));
-            
-            // Verificar se a posição é válida (não sobrepõe outras palavras de forma conflitante)
-            const valid = checkPositionValidity(word, startRow, startCol, direction);
-            
-            return { startRow, startCol, valid };
-        }
-
-        function checkPositionValidity(word, row, col, direction) {
-            for (let i = 0; i < word.length; i++) {
-                let currentRow = row;
-                let currentCol = col;
-                
-                switch (direction) {
-                    case 'horizontal':
-                        currentCol = col + i;
-                        break;
-                    case 'vertical':
-                        currentRow = row + i;
-                        break;
-                    case 'diagonal':
-                        currentRow = row + i;
-                        currentCol = col + i;
-                        break;
-                }
-                
-                // Se a célula já contém uma letra diferente da palavra atual, posição inválida
-                if (gameState.grid[currentRow][currentCol] !== '' && 
-                    gameState.grid[currentRow][currentCol] !== word[i]) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        function placeWord(word, row, col, direction) {
-            for (let i = 0; i < word.length; i++) {
-                let currentRow = row;
-                let currentCol = col;
-                
-                switch (direction) {
-                    case 'horizontal':
-                        currentCol = col + i;
-                        break;
-                    case 'vertical':
-                        currentRow = row + i;
-                        break;
-                    case 'diagonal':
-                        currentRow = row + i;
-                        currentCol = col + i;
-                        break;
-                }
-                
-                gameState.grid[currentRow][currentCol] = word[i];
-            }
         }
 
         function createWordGrid() {
@@ -806,7 +793,6 @@
         function setupEventListeners() {
             document.getElementById('hintBtn').addEventListener('click', showHint);
             document.getElementById('resetBtn').addEventListener('click', clearSelection);
-            document.getElementById('solveBtn').addEventListener('click', solveAll);
             document.getElementById('newGameBtn').addEventListener('click', newGame);
         }
 
@@ -850,50 +836,6 @@
             }
         }
 
-        function solveAll() {
-            if (confirm('Tem certeza que deseja resolver todas as palavras?')) {
-                gameState.words.forEach(wordObj => {
-                    if (!wordObj.found) {
-                        wordObj.found = true;
-                        gameState.wordsFound++;
-                        
-                        // Marcar todas as células da palavra como encontradas
-                        for (let i = 0; i < wordObj.word.length; i++) {
-                            let row = wordObj.startRow;
-                            let col = wordObj.startCol;
-                            
-                            switch (wordObj.direction) {
-                                case 'horizontal':
-                                    col = wordObj.startCol + i;
-                                    break;
-                                case 'vertical':
-                                    row = wordObj.startRow + i;
-                                    break;
-                                case 'diagonal':
-                                    row = wordObj.startRow + i;
-                                    col = wordObj.startCol + i;
-                                    break;
-                            }
-                            
-                            const cell = document.querySelector(`.grid-cell[data-row="${row}"][data-col="${col}"]`);
-                            if (cell) {
-                                cell.classList.add('found');
-                            }
-                        }
-                        
-                        // Atualizar lista
-                        const wordItem = document.getElementById(`word-${wordObj.word}`);
-                        if (wordItem) {
-                            wordItem.classList.add('found');
-                        }
-                    }
-                });
-                
-                updateGameDisplay();
-                checkGameCompletion();
-            }
-        }
-
         function newGame() {
             // Reiniciar estado do jogo
             gameState.wordsFound = 0;
@@ -905,13 +847,21 @@
             });
             
             // Recomeçar o jogo
-            initializeGame();
             createWordGrid();
             updateGameDisplay();
             
             // Esconder tela de conclusão
             document.getElementById('gameComplete').style.display = 'none';
             document.getElementById('hintContainer').style.display = 'none';
+            
+            // Limpar seleções
+            document.querySelectorAll('.grid-cell').forEach(cell => {
+                cell.classList.remove('found');
+            });
+            
+            document.querySelectorAll('.word-item').forEach(item => {
+                item.classList.remove('found');
+            });
         }
     </script>
 </body>
